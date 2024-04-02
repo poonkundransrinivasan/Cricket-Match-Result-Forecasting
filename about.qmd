@@ -16,3 +16,5 @@ This project was developed by **Daaku Data Singh** For [INFO 523 - Data Mining a
 -   Akash Srinivasan: MS Data Science
 
 -   Praveen Kumar Pappala: MS Data Science
+
+-   Rajitha Reddy Tiruthani: 1$^{st}$ Year MS Data Science
