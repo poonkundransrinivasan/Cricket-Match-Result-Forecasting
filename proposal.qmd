@@ -1,5 +1,5 @@
 ---
-title: "Proposal title"
+title: "Prediction of ODI Outcomes"
 subtitle: "Proposal"
 author: 
   - name: "Team Name - Team member 1, Team member 2,..."

@@ -4714,7 +4714,9 @@ vertical-align: -.125em;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#why-the-odi-dataset" id="toc-why-the-odi-dataset" class="nav-link" data-scroll-target="#why-the-odi-dataset">Why the ODI dataset</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
   <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
   <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan">Analysis plan</a></li>
   </ul>
@@ -4761,9 +4763,15 @@ vertical-align: -.125em;
 </header>
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+</section>
+<section id="why-the-odi-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-odi-dataset">Why the ODI dataset</h2>
 <div id="load-pkgs" class="cell" data-message="false" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
 <section id="dataset" class="level2">
 <h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
 <p>A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.</p>
@@ -5426,31 +5434,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-18"><a href="#cb2-18"></a><span class="co">  warning: false</span></span>
 <span id="cb2-19"><a href="#cb2-19"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
 <span id="cb2-20"><a href="#cb2-20"></a><span class="co">---</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a></span>
-<span id="cb2-24"><a href="#cb2-24"></a><span class="in">```{python}</span></span>
-<span id="cb2-25"><a href="#cb2-25"></a><span class="co">#| label: load-pkgs</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a><span class="co">#| message: false</span></span>
-<span id="cb2-27"><a href="#cb2-27"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-28"><a href="#cb2-28"></a><span class="in">```</span></span>
-<span id="cb2-29"><a href="#cb2-29"></a></span>
-<span id="cb2-30"><a href="#cb2-30"></a><span class="fu">## Dataset</span></span>
-<span id="cb2-31"><a href="#cb2-31"></a></span>
-<span id="cb2-34"><a href="#cb2-34"></a><span class="in">```{python}</span></span>
-<span id="cb2-35"><a href="#cb2-35"></a><span class="co">#| label: load-dataset</span></span>
-<span id="cb2-36"><a href="#cb2-36"></a><span class="co">#| message: false</span></span>
-<span id="cb2-37"><a href="#cb2-37"></a><span class="in">```</span></span>
-<span id="cb2-38"><a href="#cb2-38"></a></span>
-<span id="cb2-39"><a href="#cb2-39"></a>A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.</span>
-<span id="cb2-40"><a href="#cb2-40"></a></span>
-<span id="cb2-41"><a href="#cb2-41"></a>Make sure to load the data and use inline code for some of this information.</span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="fu">## Introduction</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="fu">## Why the ODI dataset</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a></span>
+<span id="cb2-28"><a href="#cb2-28"></a><span class="in">```{python}</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a><span class="co">#| label: load-pkgs</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a><span class="co">#| message: false</span></span>
+<span id="cb2-31"><a href="#cb2-31"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb2-32"><a href="#cb2-32"></a><span class="in">```</span></span>
+<span id="cb2-33"><a href="#cb2-33"></a></span>
+<span id="cb2-34"><a href="#cb2-34"></a><span class="fu">## Dataset</span></span>
+<span id="cb2-35"><a href="#cb2-35"></a></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="in">```{python}</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a><span class="co">#| label: load-dataset</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="co">#| message: false</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="in">```</span></span>
 <span id="cb2-42"><a href="#cb2-42"></a></span>
-<span id="cb2-43"><a href="#cb2-43"></a><span class="fu">## Questions</span></span>
+<span id="cb2-43"><a href="#cb2-43"></a>A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.</span>
 <span id="cb2-44"><a href="#cb2-44"></a></span>
-<span id="cb2-45"><a href="#cb2-45"></a>The two questions you want to answer.</span>
+<span id="cb2-45"><a href="#cb2-45"></a>Make sure to load the data and use inline code for some of this information.</span>
 <span id="cb2-46"><a href="#cb2-46"></a></span>
-<span id="cb2-47"><a href="#cb2-47"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb2-47"><a href="#cb2-47"></a><span class="fu">## Questions</span></span>
 <span id="cb2-48"><a href="#cb2-48"></a></span>
-<span id="cb2-49"><a href="#cb2-49"></a><span class="ss">-   </span>A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).</span>
+<span id="cb2-49"><a href="#cb2-49"></a>The two questions you want to answer.</span>
+<span id="cb2-50"><a href="#cb2-50"></a></span>
+<span id="cb2-51"><a href="#cb2-51"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb2-52"><a href="#cb2-52"></a></span>
+<span id="cb2-53"><a href="#cb2-53"></a><span class="ss">-   </span>A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
