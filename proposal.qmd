@@ -76,6 +76,13 @@ We'll use two datasets:
     | win_by_runs    | double    | The margin of victory in runs (0 for wickets, if not applicable). |
     | win_by_wickets | double    | The margin of victory in wickets (0 for runs, if not applicable). |
 
+```{python}
+import pandas as pd
+data = pd.read_csv('data/ODI_Match_Data.csv')
+
+```
+
+
 ### Research goals :
 
 1.  Match Outcome Prediction:
