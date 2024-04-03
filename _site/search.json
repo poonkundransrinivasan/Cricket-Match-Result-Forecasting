@@ -1,31 +1,38 @@
 [
   {
-    "objectID": "proposal.html#why-the-odi-dataset",
-    "href": "proposal.html#why-the-odi-dataset",
+    "objectID": "proposal.html",
+    "href": "proposal.html",
     "title": "Prediction of ODI Outcomes",
-    "section": "Why the ODI dataset",
-    "text": "Why the ODI dataset\n\nimport numpy as np"
+    "section": "",
+    "text": "The ODI dataset was chosen because it contains data from the last 20 years on historical cricket matches. From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model. ## Why the ODI dataset\n\nimport numpy as np \nimport pandas as pd\n#import git_lfs\nfrom git import Repo"
+  },
+  {
+    "objectID": "proposal.html#introduction",
+    "href": "proposal.html#introduction",
+    "title": "Prediction of ODI Outcomes",
+    "section": "",
+    "text": "The ODI dataset was chosen because it contains data from the last 20 years on historical cricket matches. From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model. ## Why the ODI dataset\n\nimport numpy as np \nimport pandas as pd\n#import git_lfs\nfrom git import Repo"
   },
   {
     "objectID": "proposal.html#dataset",
     "href": "proposal.html#dataset",
     "title": "Prediction of ODI Outcomes",
     "section": "Dataset",
-    "text": "Dataset\nA brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.\nMake sure to load the data and use inline code for some of this information."
+    "text": "Dataset\n\nodi_match_data = pd.read_csv('data/ODI_Match_Data.csv')\nodi_match_info = pd.read_csv('data/ODI_Match_info.csv')\n\n\n# Merge the datasets based on the match id\n#merged_data = pd.merge(odi_match_data, odi_match_info, on='match id')\n\n# Print the head of the merged dataset\n#print(merged_data.head())"
   },
   {
-    "objectID": "proposal.html#questions",
-    "href": "proposal.html#questions",
-    "title": "Proposal title",
-    "section": "Questions",
-    "text": "Questions\nThe two questions you want to answer."
+    "objectID": "proposal.html#goal",
+    "href": "proposal.html#goal",
+    "title": "Prediction of ODI Outcomes",
+    "section": "Goal",
+    "text": "Goal\nPredicting 2023 ODI match stats using historical data."
   },
   {
     "objectID": "proposal.html#analysis-plan",
     "href": "proposal.html#analysis-plan",
     "title": "Prediction of ODI Outcomes",
     "section": "Analysis plan",
-    "text": "Analysis plan\n - A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any)."
+    "text": "Analysis plan\n\n\n\nAnalysis Plan"
   },
   {
     "objectID": "index.html",
@@ -110,12 +117,5 @@
     "title": "About",
     "section": "",
     "text": "This project was developed by Daaku Data Singh For INFO 523 - Data Mining and Discovery at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nChristian Ortmann: 1\\(^{st}\\) Year MS Data Science, CS researcher in the School of Mining and Mineral Resources\nTejas Bhawari: MS Data Science, RPA Developer\nSrinivasan Poonkundran: MS Data Science\nAkash Srinivasan: MS Data Science\nPraveen Kumar Pappala: MS Data Science\nRajitha Reddy Tiruthani: 1\\(^{st}\\) Year MS Data Science"
-  },
-  {
-    "objectID": "proposal.html#goal",
-    "href": "proposal.html#goal",
-    "title": "Prediction of ODI Outcomes",
-    "section": "Goal",
-    "text": "Goal\nPredicting 2023 ODI match stats using historical data."
   }
 ]
