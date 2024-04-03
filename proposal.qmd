@@ -20,30 +20,32 @@ jupyter: python3
 ---
 ## Introduction
 
+The ODI dataset was chosen because it contains data from the last 20 years on historical cricket matches. From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model.
 ## Why the ODI dataset
-
 
 ```{python}
 #| label: load-pkgs
 #| message: false
 import numpy as np 
+import pandas as pd
+import git_lfs
 ```
 
 ## Dataset
 
 ```{python}
-#| label: load-dataset
-#| message: false
+#cat foo.pointer | git lfs smudge
+pd.read_csv('data/ODI_Match_Data.csv')
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
 
-Make sure to load the data and use inline code for some of this information.
 
-## Questions
+## Goal
 
-The two questions you want to answer.
+Predicting 2023 ODI match stats using historical data. 
+![Work Plan](images/workplan.png)
 
 ## Analysis plan
 
--   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+![Analysis Plan](images/workflow.png)
+
