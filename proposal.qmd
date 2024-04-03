@@ -79,6 +79,7 @@ We'll use two datasets:
 ```{python}
 import pandas as pd
 data = pd.read_csv('data/ODI_Match_Data.csv')
+print(data.head())
 
 ```
 
@@ -101,7 +102,7 @@ data = pd.read_csv('data/ODI_Match_Data.csv')
 
 We will hope to dynamically predict the player stats in the last third of each inning using regression models. We will compare and contrast each model (KNN, Random Forest Regressor etc.) to determine the best performing model. This initial testing will be done with past year's data to validate the models. We hope to then apply the best model to determine how a player will perform based on their last match. We will then use a classification model to predict the winner of each match based on player performance.
 
-\![Work Plan](images/workplan.png)
+![Work Plan](images/workplan.png)
 
 ## References
 
