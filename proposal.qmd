@@ -2,10 +2,10 @@
 title: "Prediction of ODI Outcomes"
 subtitle: "Proposal"
 author: 
-  - name: "Team Name - Team member 1, Team member 2,..."
+  - name: "Team Name - Team member 1, Team member 2,...DaakuDataSingh - Christian Ortmann, Tejas Bhawari, Srinivasan Poonkundran, Akash Srinivasan, Praveen Kumar Pappala, Rajitha Reddy Tiruthani"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: "Our project predicts the match results, player performances, and significant events by using historical ODI data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement."
 format:
   html:
     code-tools: true
@@ -28,16 +28,24 @@ The ODI dataset was chosen because it contains data from the last 20 years on hi
 #| message: false
 import numpy as np 
 import pandas as pd
-import git_lfs
+#import git_lfs
+from git import Repo
 ```
 
 ## Dataset
 
 ```{python}
 #cat foo.pointer | git lfs smudge
-pd.read_csv('data/ODI_Match_Data.csv')
+Odi_Match_Data = pd.read_csv('data/ODI_Match_Data.csv')
+Odi_Match_Info = pd.read_csv('data/ODI_Match_info.csv')
 ```
+```
+# Merge the datasets based on the match id
+merged_data = pd.merge(odi_match_data, odi_match_info, on='match id')
 
+# Print the head of the merged dataset
+print(merged_data.head())
+```
 
 
 ## Goal
