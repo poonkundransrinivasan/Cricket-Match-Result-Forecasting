@@ -23,15 +23,6 @@ jupyter: python3
 
 The ODI dataset was chosen because it contains data from the last 20 years on historical cricket matches. From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model. \## Why the ODI dataset
 
-```{python}
-#| label: load-pkgs
-#| message: false
-import numpy as np 
-import pandas as pd
-#import git_lfs
-from git import Repo
-```
-
 ## High-level Goal
 
 In this project we will create a dashboard of a live, ongoing cricket match that updates and predict its plots and statistics at regular intervals.
@@ -103,7 +94,7 @@ We'll use two datasets:
 
 We will hope to dynamically predict the player stats in the last third of each inning using regression models. We will compare and contrast each model (KNN, Random Forest Regressor etc.) to determine the best performing model. This initial testing will be done with past year's data to validate the models. We hope to then apply the best model to determine how a player will perform based on their last match. We will then use a classification model to predict the winner of each match based on player performance.
 
-\![Work Plan](data/workplan.png)
+\![Work Plan](images/workplan.png)
 
 ## References
 
