@@ -1,0 +1,12 @@
+{
+  "hash": "c5ce6fc7dba7cfd922b8b9ee11a69550",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: Prediction of ODI Outcomes\nsubtitle: Proposal\nauthor:\n  - name: |-\n      DaakuDataSingh - Christian Ortmann, Tejas Bhawari, Srinivasan Poonkundran, \n       Akash Srinivasan, Praveen Kumar Pappala, Rajitha Reddy Tiruthani\n    affiliations:\n      - name: 'School of Information, University of Arizona'\ndescription: \"Our project predicts the\\_match\\_results, player performances, and significant events by using historical ODI data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement.\"\nformat:\n  html:\n    code-tools: true\n    code-overflow: wrap\n    code-line-numbers: true\n    embed-resources: true\neditor: visual\ncode-annotations: hover\nexecute:\n  warning: false\n---\n\n## Introduction\n\nThe ODI dataset was chosen because it contains data from the last 20 years on historical cricket matches. From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model.\n## Why the ODI dataset\n\n::: {#load-pkgs .cell message='false' execution_count=1}\n``` {.python .cell-code}\nimport numpy as np \nimport pandas as pd\n#import git_lfs\nfrom git import Repo\n```\n:::\n\n\n## Dataset\n\n::: {#d55cd023 .cell execution_count=2}\n``` {.python .cell-code}\nodi_match_data = pd.read_csv('data/ODI_Match_Data.csv')\nodi_match_info = pd.read_csv('data/ODI_Match_info.csv')\n```\n:::\n\n\n::: {#f728eb4e .cell execution_count=3}\n``` {.python .cell-code}\n# Merge the datasets based on the match id\n#merged_data = pd.merge(odi_match_data, odi_match_info, on='match id')\n\n# Print the head of the merged dataset\n#print(merged_data.head())\n```\n:::\n\n\n## Goal\n\nPredicting 2023 ODI match stats using historical data. \n![Work Plan](images/workplan.png)\n\n## Analysis plan\n\n![Analysis Plan](images/workflow.png)\n\n",
+    "supporting": [
+      "proposal_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

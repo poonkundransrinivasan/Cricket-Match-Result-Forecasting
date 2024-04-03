@@ -3,3 +3,4 @@ nbformat
 git
 pandas
 numpy
+GitPython
