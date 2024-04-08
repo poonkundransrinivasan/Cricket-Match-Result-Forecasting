@@ -21,9 +21,7 @@ jupyter: python3
 
 ## Introduction
 
-Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, predictions of player statistics and match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use the total year match statistics from 2022 to create a predictive model that predicts how a player will perform in the last 30% of their batting inning, based on the data from the first 70% of the inning. From this information we can determine how a player will perform at the end of the inning and use this data to help predict the match winner. We then will cross reference this winner prediction from player statistics with a classification model based on previous season team performance to 
-
- From this data, we can use a regression model to predict which teams won in the 2023 season. The entire season will be predicted and the the actual 2023 data will be used to cross validate the results and determine the accuracy of the model. 
+Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use previous years' data from 2002 to 2022 to predict the outcomes of matches in the 2023 season based on a logistic regression model that takes into account features such as toss outcome and home field advantage.
 
 ## Why the ODI dataset
 
@@ -106,6 +104,28 @@ print(data.head())
 We will hope to dynamically predict the player stats in the last third of each inning using regression models. We will compare and contrast each model (KNN, Random Forest Regressor etc.) to determine the best performing model. This initial testing will be done with past year's data to validate the models. We hope to then apply the best model to determine how a player will perform based on their last match. We will then use a classification model to predict the winner of each match based on player performance.
 
 ![](images/workflow.png)
+
+## Back-End API
+
+**1) Player Performance Tracking API:**
+
+Endpoint: /player-performance
+
+Parameters:
+
+-   match_id: The ongoing match ID.
+
+-   player_name: The name of the player.
+
+Response:
+
+-   Returns real-time updates for the player's performance including runs scored, wickets taken, strike rate, economy rate, etc.
+
+API:
+
+-   GET /player-performance?match_id={ongoing-id}&player_name={pname}
+
+*These APIs are subject to change, additions, or removals as we analyze the data.*
 
 ## References
 
