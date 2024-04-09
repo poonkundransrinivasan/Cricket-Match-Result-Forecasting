@@ -25,7 +25,11 @@ Since its inception in the late 16th century, cricket has established itself as 
 
 ## Why the ODI dataset
 
-REASONING WHY WE CHOSE THIS DATASET. INCLUDE INFORMATON SUCH AS THE COLUMNS THAT ARE PRESENT (IDK CRICKET WELL SO I CAN'T COMMENT ON THIS)
+-   Cricket enjoys widespread popularity worldwide, particularly among cricket enthusiasts, making it a sport with broad appeal.
+
+-   The ODI dataset is rich in detail, encompassing player statistics, match outcomes, team performances, and other relevant information.
+
+-   With the ODI dataset, we can conduct thorough comparative analyses across players, teams, and historical eras. These comparisons can uncover trends, patterns, and changes, offering valuable insights into the sport's development over time.
 
 ## High-level Goal
 
@@ -112,7 +116,7 @@ GET /current-performance
 ## Schedule
 
 | Task                                        | Priority (as of 4/10) | Responsible                             | Due      |
-|------------------------|-------------|------------------------|-------------|
+|---------------------|----------------|---------------------|----------------|
 | Finalize proposal w/ changes                | High                  | Christian, Srinivasan, Akash            | 4/10     |
 | EDA/Data Selection                          | High                  | Rajitha, Praveen, Christian             | 4/13     |
 | Feature Engineering                         | Medium                | Akash, Rajitha, Gowtham, Tejas          | 4/17     |
