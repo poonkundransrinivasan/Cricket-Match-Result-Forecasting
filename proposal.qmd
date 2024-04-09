@@ -21,9 +21,11 @@ jupyter: python3
 
 ## Introduction
 
-Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use previous years' data from 2002 to 2022 to predict the outcomes of matches in the 2023 season based on a logistic regression model that takes into account features such as toss outcome and home field advantage.
+Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use "live" data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match "update" we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
 
 ## Why the ODI dataset
+
+REASONING WHY WE CHOSE THIS DATASET. INCLUDE INFORMATON SUCH AS THE COLUMNS THAT ARE PRESENT (IDK CRICKET WELL SO I CAN'T COMMENT ON THIS)
 
 ## High-level Goal
 
@@ -39,7 +41,7 @@ For this project we wanted to showcase our prediction skill-set with the challen
 
 We'll use two datasets:
 
-1.  **ODI_Match_Data.csv**: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We'll need this one to investigate partnerships between batsmen. It's dimensions are 155432 rows of data by 23 variable columns
+1.  **ODI_Match_Data.csv**: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We'll need this one to investigate partnerships between batsmen. It's dimensions are 155432 rows of data by 23 variable columns. The data that appears in this proposal is a truncated version for ease of storage, but the project will utilize an API that will supply the entire dataset.
 
     Variables that we'll use:
 
@@ -85,47 +87,41 @@ print(data.head())
 
 ```
 
-### Research goals :
+### Research goal:
 
-1.  Match Outcome Prediction:
+Match Outcome Prediction:
 
-    Use historical match data and machine learning algorithms to predict the outcome of ongoing matches based on current match conditions (e.g., runs scored, wickets fallen, overs bowled).
+1.  Use historical and current match data with logistic regression classification to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update every minute. Each time a statistic is updated, the prediction will update as well.
 
-    Display the predicted winner and the probability of each team winning the match.
+## Analysis Plan
 
-2.  Player Performance Prediction:
-
-    Predict the performance of individual players during the match, including runs scored, wickets taken, and player of the match contenders.
-
-    Utilize player statistics, recent form, and match conditions to generate these predictions.
-
-## Plan of Attack
-
-We will hope to dynamically predict the player stats in the last third of each inning using regression models. We will compare and contrast each model (KNN, Random Forest Regressor etc.) to determine the best performing model. This initial testing will be done with past year's data to validate the models. We hope to then apply the best model to determine how a player will perform based on their last match. We will then use a classification model to predict the winner of each match based on player performance.
+We will first preprocess the dataset by cleaning and converting it before analyzing the results of matches between two teams, depending on the current match we are focused on. Using feature engineering, we will extract pertinent aspects like the location, the bowling and batting teams, the number of runs scored, the number of wickets taken, etc. After dividing the dataset into training and testing sets, the selected model will be trained using the training set. Metrics uch as accuracy, precision, recall, or F1-score will be used to measure the model's predictive power on the testing data after training. In the end, we will use the trained model to forecast the match result based on the attributes that were taken out of the data. This strategy will shed light on the likely outcome of the match. This model will be displayed on a dashboard which will refresh every time a new stat is updated, and the prediction from the model will update.
 
 ![](images/workflow.png)
 
 ## Back-End API
 
-**1) Player Performance Tracking API:**
+GET /current-performance
 
-Endpoint: /player-performance
+-   Live Data: Will show the live stats (mocked) of an ongoing match between team A and B
 
-Parameters:
-
--   match_id: The ongoing match ID.
-
--   player_name: The name of the player.
-
-Response:
-
--   Returns real-time updates for the player's performance including runs scored, wickets taken, strike rate, economy rate, etc.
-
-API:
-
--   GET /player-performance?match_id={ongoing-id}&player_name={pname}
+-   Prediction: Who will win out of Team A and B
 
 *These APIs are subject to change, additions, or removals as we analyze the data.*
+
+## Schedule
+
+| Task                                        | Priority (as of 4/10) | Responsible                             | Due      |
+|------------------------|-------------|------------------------|-------------|
+| Finalize proposal w/ changes                | High                  | Christian, Srinivasan, Akash            | 4/10     |
+| EDA/Data Selection                          | High                  | Rajitha, Praveen, Christian             | 4/13     |
+| Feature Engineering                         | Medium                | Akash, Rajitha, Gowtham, Tejas          | 4/17     |
+| Model Training , Validation, and Comparison | Medium                | Christian, Praveen, Srinivasan, Gowtham | 4/19     |
+| Model Integration with API from 526         | Low                   | Srinivasan, Tejas, Praveen              | 4/22     |
+| Write Up Outline                            | Low                   | Rajitha, Tejas, Akash, Gowtham          | 4/24     |
+| Presentation/ Write Up Final Draft          | Low                   | Entire Team                             | 4/31     |
+| Review                                      | Low                   | Entire Team                             | 4/31-5/5 |
+| Presentation                                | Low                   | Entire Team                             | 5/6      |
 
 ## References
 
