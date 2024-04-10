@@ -1,8 +1,8 @@
 {
-  "hash": "fe9a1323dad673a9e14a2a90f4d1ec93",
+  "hash": "f8621d888ce78c9f961b3727c2950b05",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: About\nformat: html\neditor: visual\n---\n\nThis project was developed by **Daaku Data Singh** For [INFO 523 - Data Mining and Discovery](https://datamineaz.org/) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\n-   Christian Ortmann: 1$^{st}$ Year MS Data Science, CS researcher in the School of Mining and Mineral Resources\n\n-   Tejas Bhawari: MS Data Science, RPA Developer\n\n-   Srinivasan Poonkundran: MS Data Science\n\n-   Akash Srinivasan: MS Data Science\n\n-   Praveen Kumar Pappala: MS Data Science\n\n-   Rajitha Reddy Tiruthani: 1$^{st}$ Year MS Data Science\n\n",
+    "markdown": "---\ntitle: About\nformat: html\neditor: visual\n---\n\nThis project was developed by **Daaku Data Singh** For [INFO 523 - Data Mining and Discovery](https://datamineaz.org/) at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\n-   Christian Ortmann: 1$^{st}$ Year MS Data Science, CS researcher in the School of Mining and Mineral Resources\n\n-   Tejas Bhawari: MS Data Science, RPA Developer\n\n-   Srinivasan Poonkundran: MS Data Science\n\n-   Akash Srinivasan: MS Data Science\n\n-   Praveen Kumar Pappala: MS Data Science\n\n-   Rajitha Reddy Tiruthani: 1$^{st}$ Year MS Data Science\n\n-   Gowtham Theeda: MS Data Science\n\n",
     "supporting": [
       "about_files/figure-html"
     ],
