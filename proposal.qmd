@@ -93,15 +93,23 @@ print(data.head())
 
 ### Research goal:
 
-Match Outcome Prediction:
+Match Outcome Prediction -
 
-1.  Use historical and current match data with logistic regression classification to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update every minute. Each time a statistic is updated, the prediction will update as well.
+Use historical and current match data with logistic regression classification to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update every minute. Each time a statistic is updated, the prediction will update as well.
 
-## Analysis Plan
+## Implementation :
+
+### Analysis Plan
 
 We will first preprocess the dataset by cleaning and converting it before analyzing the results of matches between two teams, depending on the current match we are focused on. Using feature engineering, we will extract pertinent aspects like the location, the bowling and batting teams, the number of runs scored, the number of wickets taken, etc. After dividing the dataset into training and testing sets, the selected model will be trained using the training set. Metrics uch as accuracy, precision, recall, or F1-score will be used to measure the model's predictive power on the testing data after training. In the end, we will use the trained model to forecast the match result based on the attributes that were taken out of the data. This strategy will shed light on the likely outcome of the match. This model will be displayed on a dashboard which will refresh every time a new stat is updated, and the prediction from the model will update.
 
 ![](images/workflow.png)
+
+### Mocking Live Data :
+
+To avoid unnecessary costs associated with real-time data, we will split the data into two parts: past data and live data.
+
+The past data will include information from years 2002 to 2022, while the live data will consist of data from the year 2023. Each entry from 2023 will be read from the actual CSV file and entered into a database table with an interval of 10 to 20 seconds between two consecutive entries. These entries will be considered as live data and will be sent to the API caller.
 
 ## Back-End API
 
@@ -116,7 +124,7 @@ GET /current-performance
 ## Schedule
 
 | Task                                        | Priority (as of 4/10) | Responsible                             | Due      |
-|---------------------|----------------|---------------------|----------------|
+|-------------------|-----------------|-------------------|-----------------|
 | Finalize proposal w/ changes                | High                  | Christian, Srinivasan, Akash            | 4/10     |
 | EDA/Data Selection                          | High                  | Rajitha, Praveen, Christian             | 4/13     |
 | Feature Engineering                         | Medium                | Akash, Rajitha, Gowtham, Tejas          | 4/17     |
