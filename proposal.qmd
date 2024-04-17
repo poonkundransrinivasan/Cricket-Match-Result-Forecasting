@@ -124,7 +124,7 @@ GET /current-performance
 ## Schedule
 
 | Task                                        | Priority (as of 4/10) | Responsible                             | Due      |
-|-------------------|-----------------|-------------------|-----------------|
+|-------------------|------------------|-------------------|------------------|
 | Finalize proposal w/ changes                | High                  | Christian, Srinivasan, Akash            | 4/10     |
 | EDA/Data Selection                          | High                  | Rajitha, Praveen, Christian             | 4/13     |
 | Feature Engineering                         | Medium                | Akash, Rajitha, Gowtham, Tejas          | 4/17     |
