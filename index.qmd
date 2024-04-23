@@ -28,6 +28,7 @@ Add project introduction here.
 ## Setup
 ```{python}
 import pandas as pd
+import glob
 
 ```
 
@@ -35,7 +36,21 @@ import pandas as pd
 
 ## EDA
 ```{python}
-data = pd.read_csv('data/ODI_Match_Data.csv')
+
+csv_files = glob.glob('data/output_*.csv')
+
+combined_df = pd.DataFrame()
+
+# Loop through each CSV file and append its contents to the combined dataframe
+for csv_file in csv_files:
+    df = pd.read_csv(csv_file)
+    combined_df = pd.concat([combined_df, df])
+
+combined_df = combined_df[~combined_df['season'].astype(str).str.startswith(('2023', '2022/23'))] #exclude 2023 data
+
+from02To22Data = combined_df
+
+
 
 ```
 

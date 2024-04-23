@@ -138,5 +138,96 @@
     "title": "Project title",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nAnd add footnotes↩︎"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Project Title",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "index.html#abstract",
+    "href": "index.html#abstract",
+    "title": "Project Title",
+    "section": "",
+    "text": "Add project abstract here."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Project Title",
+    "section": "Introduction",
+    "text": "Introduction\nAdd project introduction here."
+  },
+  {
+    "objectID": "index.html#setup",
+    "href": "index.html#setup",
+    "title": "Project Title",
+    "section": "Setup",
+    "text": "Setup"
+  },
+  {
+    "objectID": "index.html#eda",
+    "href": "index.html#eda",
+    "title": "Project Title",
+    "section": "EDA",
+    "text": "EDA"
+  },
+  {
+    "objectID": "index.html#data-cleaning",
+    "href": "index.html#data-cleaning",
+    "title": "Project Title",
+    "section": "Data Cleaning",
+    "text": "Data Cleaning"
+  },
+  {
+    "objectID": "index.html#feature-engineering",
+    "href": "index.html#feature-engineering",
+    "title": "Project Title",
+    "section": "Feature Engineering",
+    "text": "Feature Engineering"
+  },
+  {
+    "objectID": "index.html#feature-selection",
+    "href": "index.html#feature-selection",
+    "title": "Project Title",
+    "section": "Feature Selection",
+    "text": "Feature Selection"
+  },
+  {
+    "objectID": "index.html#model-training-logit",
+    "href": "index.html#model-training-logit",
+    "title": "Project Title",
+    "section": "Model Training (Logit)",
+    "text": "Model Training (Logit)"
+  },
+  {
+    "objectID": "index.html#model-validation",
+    "href": "index.html#model-validation",
+    "title": "Project Title",
+    "section": "Model Validation",
+    "text": "Model Validation"
+  },
+  {
+    "objectID": "index.html#alternative-models",
+    "href": "index.html#alternative-models",
+    "title": "Project Title",
+    "section": "Alternative Models",
+    "text": "Alternative Models\n\nDecision Tree Classifier\n\n\nRandom Forest Classifier"
+  },
+  {
+    "objectID": "index.html#model-comparison-and-selection",
+    "href": "index.html#model-comparison-and-selection",
+    "title": "Project Title",
+    "section": "Model Comparison and Selection",
+    "text": "Model Comparison and Selection"
+  },
+  {
+    "objectID": "index.html#model-implementation-with-dashboard",
+    "href": "index.html#model-implementation-with-dashboard",
+    "title": "Project Title",
+    "section": "Model Implementation with Dashboard",
+    "text": "Model Implementation with Dashboard"
   }
 ]

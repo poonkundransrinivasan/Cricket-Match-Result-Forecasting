@@ -1,10 +1,10 @@
 {
-  "hash": "4551a4da8c5b2851bdf645908f7bbcd4",
+  "hash": "6c1003e21ffc758bd95afb4193e390eb",
   "result": {
     "engine": "jupyter",
-    "markdown": "---\ntitle: Project Title\nsubtitle: INFO 523 - Project Final\nauthor:\n  - name: 'Team name - Team member 1, Team member 2,...'\n    affiliations:\n      - name: 'School of Information, University of Arizona'\ndescription: Project description\nformat:\n  html:\n    code-tools: true\n    code-overflow: wrap\n    embed-resources: true\neditor: visual\nexecute:\n  warning: false\n  echo: false\n---\n\n## Abstract\n\nAdd project abstract here.\n\n",
+    "markdown": "---\ntitle: Project Title\nsubtitle: INFO 523 - Project Final\nauthor:\n  - name: 'Team name - Team member 1, Team member 2,...'\n    affiliations:\n      - name: 'School of Information, University of Arizona'\ndescription: Project description\nformat:\n  html:\n    code-tools: true\n    code-overflow: wrap\n    embed-resources: true\neditor: visual\nexecute:\n  warning: false\n  echo: false\n---\n\n## Abstract\nAdd project abstract here.\n\n\n## Introduction\nAdd project introduction here.\n\n## Setup\n\n\n\n## EDA\n\n\n\n## Data Cleaning\n\n## Feature Engineering\n\n## Feature Selection\n\n## Model Training (Logit)\n\n## Model Validation\n\n## Alternative Models\n\n### Decision Tree Classifier\n\n### Random Forest Classifier\n\n## Model Comparison and Selection\n\n## Model Implementation with Dashboard\n\n\n\n",
     "supporting": [
-      "index_files/figure-html"
+      "index_files"
     ],
     "filters": [],
     "includes": {}
