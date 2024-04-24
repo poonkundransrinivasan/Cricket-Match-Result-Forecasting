@@ -98,10 +98,18 @@ continuous = pd.DataFrame(continuous, index = from02to22.index, columns = list(t
 
 to_encode = (from02to22.select_dtypes(include =['object'])) #test if anything is an object or category variable
 
-encoded_data = pd.DataFrame() #empty dataframe to store encoded values
-#loop to encode object variables with LabelEncoder
+label_encoders = [] #make new encoder for each column
+
+# Iterate over each column in 'to_encode' and encode using a separate LabelEncoder
 for col in to_encode:
-    encoded_data[col] = LabelEncoder().fit_transform(from02to22[col])
+    # Create a new instance of LabelEncoder for the current column
+    encoder = LabelEncoder()
+    
+    # Fit and transform the data in 'from02to22[col]'
+    encoded_data[col] = encoder.fit_transform(from02to22[col])
+    
+    # Store the encoder in the list
+    label_encoders.append(encoder)
 
 #patch the columns back together
 
@@ -123,11 +131,11 @@ print(top10)
 
 ```
 
-## Model Training (Logit)
+## Model Training (Decision Tree)
 ```{python}
 
 #split data into training and testing
-X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.4) #break into 4 groups for testing and training, make the training dataset 70% of the data and the testing dataset 30% https://builtin.com/data-science/train-test-split
+X_train, X_test, y_train, y_test = tts(top10, y, test_size = 0.2) #break into 4 groups for testing and training, make the training dataset 70% of the data and the testing dataset 30% https://builtin.com/data-science/train-test-split
 #PCA
 pca = PCA(n_components = 5) #go from 10 components to 5 components
 X_train_pca = pca.fit_transform(X_train)
@@ -138,38 +146,50 @@ X_test = X_test_pca
 
 #training and testing models
 
-#logistic regression
-lr = LogisticRegression()
-
-lr.fit(X_train, 
-         y_train)
-predictLR = lr.predict(X_test)
-outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR}) #https://www.machinelearningnuggets.com/logistic-regression/
-
-
-#decision tree
+ #decision tree
 dtc = DecisionTreeClassifier(criterion='gini')
 dtc.fit(X_train, 
           y_train)
 predictDTC = dtc.predict(X_test)
 outcomeDTC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictDTC})
+outcomeDTC['Actual'] = label_encoders[8].inverse_transform(outcomeDTC['Actual'])
+outcomeDTC['Predicted'] = label_encoders[8].inverse_transform(outcomeDTC['Predicted'])
 
-#random forest
-rfc = RandomForestClassifier(criterion='gini')
-rfc.fit(X_train, 
-          y_train)
-predictRFC = rfc.predict(X_test)
-outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
 
 ```
 
 ## Model Validation
 ```{python}
+#Evaluating models
+#decision tree
+cvDT = cross_validate(dtc,X_train, y_train)
+print("cross validation of decision tree", cvDT)
+print("accuracy of decision tree:", metrics.accuracy_score(y_test, predictDTC)) #testing how accuracy of the models
+print("precision of decision tree:", metrics.precision_score(y_test, predictDTC, average = 'weighted'))
+print("recall of decision tree:", metrics.recall_score(y_test, predictDTC, average = 'weighted'))
+print("f1 of decision tree:", metrics.f1_score(y_test, predictDTC, average = 'weighted'))
+#print("ROCAUC macro of decision tree:", metrics.roc_auc_score(y_test, predictDTC))
+# print("ROCAUC micro of decision tree:", metrics.roc_auc_score(y_test, predictDTC, average = 'micro'))
+
+
+# y_pred_proba = dtc.predict_proba(X_test)[::,1] #need probabilities for roc curve
+# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+# plt.plot(fpr,tpr)
+# plt.ylabel('True Positive Rate')
+# plt.xlabel('False Positive Rate')
+# plt.title('ROC Curve Decision Tree')
+# plt.show()
+
+# print('')
+
+
+
 
 ```
 
 ## Alternative Models
 ```{python}
+
 
 ```
 
@@ -180,7 +200,23 @@ outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
 
 ### Random Forest Classifier
 ```{python}
+#decision tree
+rfc = RandomForestClassifier(criterion='gini')
+rfc.fit(X_train, 
+          y_train)
+predictRFC = rfc.predict(X_test)
+outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
+outcomeRFC['Actual'] = label_encoders[8].inverse_transform(outcomeRFC['Actual'])
+outcomeRFC['Predicted'] = label_encoders[8].inverse_transform(outcomeRFC['Predicted'])
 
+#Evaluating models
+#random forest
+cvRF = cross_validate(dtc,X_train, y_train)
+print("cross validation of random forest", cvRF)
+print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
+print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
+print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
+print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
 ```
 
 ## Model Comparison and Selection
