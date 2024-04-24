@@ -29,7 +29,16 @@ Add project introduction here.
 ```{python}
 import pandas as pd
 import glob
-
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.model_selection import train_test_split as tts
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+from sklearn.model_selection import cross_validate
+from sklearn.decomposition import PCA
 ```
 
 
@@ -37,18 +46,24 @@ import glob
 ## EDA
 ```{python}
 
-csv_files = glob.glob('data/output_*.csv')
+df = pd.read_csv('data/ODI_Match_info.csv')
 
-combined_df = pd.DataFrame()
+from02to22 = df[~df['season'].astype(str).str.startswith(('2023/2024','2023', '2022/23'))] #exclude 2023 data
 
-# Loop through each CSV file and append its contents to the combined dataframe
-for csv_file in csv_files:
-    df = pd.read_csv(csv_file)
-    combined_df = pd.concat([combined_df, df])
+from02to22
+print(type(from02to22)) #confirm data is read in as a df
+print(from02to22.shape) #confirm data shape
+print(from02to22.dtypes) #understand the types of data in the df
+print(from02to22.isna().sum()) #count NA values in columns
+print(pd.DataFrame.describe(from02to22)) #descriptive function to look at dataframe)
 
-combined_df = combined_df[~combined_df['season'].astype(str).str.startswith(('2023', '2022/23'))] #exclude 2023 data
 
-from02To22Data = combined_df
+winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
+winners
+
+corr = sns.pairplot(from02to22)
+corr
+
 
 
 
@@ -56,22 +71,95 @@ from02To22Data = combined_df
 
 ## Data Cleaning
 ```{python}
+#convert Nan cities to 'Unknown'
+#drop winner NA columns
+#convert NA player of match to 'unknown'
+#convert NA umpire 3 to 'unknown'
+
+from02to22['city'] = from02to22['city'].fillna('Unknown') 
+from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown') 
+from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
+from02to22 = from02to22.dropna(subset=['winner'])
+from02to22 = from02to22.drop(columns = ['id'])
 
 
 ```
 
 ## Feature Engineering
 ```{python}
+#normalize continuous data because we dont have a normal distribution
+
+to_norm = (from02to22.select_dtypes(include =['int64', 'float64'])) #select continuous variables
+
+continuous = MinMaxScaler().fit_transform(to_norm) #fit and transform min max scaler (normalizes)
+continuous = pd.DataFrame(continuous, index = from02to22.index, columns = list(to_norm))
+
+#encode categorical variables
+
+to_encode = (from02to22.select_dtypes(include =['object'])) #test if anything is an object or category variable
+
+encoded_data = pd.DataFrame() #empty dataframe to store encoded values
+#loop to encode object variables with LabelEncoder
+for col in to_encode:
+    encoded_data[col] = LabelEncoder().fit_transform(from02to22[col])
+
+#patch the columns back together
+
+data = pd.concat([encoded_data.reset_index(drop=True), continuous.reset_index(drop=True)], axis = 1) #reset indices to avoid errors in concat
+
 
 ```
 
 ## Feature Selection
 ```{python}
+X = data.drop('winner', axis = 1) #input
+y = data['winner'] #target
+
+selector = SelectKBest(score_func= f_classif, k = 10)
+top10 = selector.fit_transform(X,y) #create variable that is the top 10 best feautures
+cols_idxs = selector.get_support(indices=True) #grab indices from feature cols, get_support is from **sklearn**
+top10 = X.iloc[:,cols_idxs] #add columns from whole dataset to the selected columns dataset https://stackoverflow.com/questions/39839112/the-easiest-way-for-getting-feature-names-after-running-selectkbest-in-scikit-le
+print(top10)
 
 ```
 
 ## Model Training (Logit)
 ```{python}
+
+#split data into training and testing
+X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.4) #break into 4 groups for testing and training, make the training dataset 70% of the data and the testing dataset 30% https://builtin.com/data-science/train-test-split
+#PCA
+pca = PCA(n_components = 5) #go from 10 components to 5 components
+X_train_pca = pca.fit_transform(X_train)
+X_test_pca = pca.transform(X_test)
+
+X_train = X_train_pca
+X_test = X_test_pca
+
+#training and testing models
+
+#logistic regression
+lr = LogisticRegression()
+
+lr.fit(X_train, 
+         y_train)
+predictLR = lr.predict(X_test)
+outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR}) #https://www.machinelearningnuggets.com/logistic-regression/
+
+
+#decision tree
+dtc = DecisionTreeClassifier(criterion='gini')
+dtc.fit(X_train, 
+          y_train)
+predictDTC = dtc.predict(X_test)
+outcomeDTC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictDTC})
+
+#random forest
+rfc = RandomForestClassifier(criterion='gini')
+rfc.fit(X_train, 
+          y_train)
+predictRFC = rfc.predict(X_test)
+outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
 
 ```
 
