@@ -39,6 +39,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.model_selection import cross_validate
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 ```
 
 
@@ -46,9 +47,23 @@ from sklearn.decomposition import PCA
 ## EDA
 ```{python}
 
-df = pd.read_csv('data/ODI_Match_info.csv')
 
-from02to22 = df[~df['season'].astype(str).str.startswith(('2023/2024','2023', '2022/23'))] #exclude 2023 data
+info = pd.read_csv('data/ODI_Match_info.csv')
+info = info.rename(columns = {'id':'match_id'})
+
+#append all files together
+csv_files = ['data/output_1.csv','data/output_2.csv','data/output_3.csv','data/output_4.csv','data/output_5.csv','data/output_6.csv','data/output_7.csv','data/output_8.csv','data/output_9.csv']
+
+matchData = pd.concat([pd.read_csv(f,low_memory=False) for f in csv_files ], ignore_index=True)
+
+#merge frames on match ID column
+
+totalData = pd.merge(matchData, info, on = 'match_id') #merge by identical column 'match_id'
+totalData.drop(totalData.filter(regex='_y$').columns, axis=1, inplace=True) #drop duplicate columns
+
+totalData = totalData.rename(columns = {'season_x':'season', 'venue_x':'venue'})
+
+from02to22 = totalData[~totalData['season'].astype(str).str.startswith(('2023/2024','2023', '2022/23'))] #exclude 2023 data
 
 from02to22
 print(type(from02to22)) #confirm data is read in as a df
@@ -71,6 +86,21 @@ corr
 
 ## Data Cleaning
 ```{python}
+#drop columns that have more than 1Million NaNs
+
+colNaCounts = from02to22.isna().sum()
+
+
+columns_to_drop = colNaCounts[colNaCounts >= 1000000].index.tolist()
+
+# Drop identified columns from the DataFrame
+from02to22 = from02to22.drop(columns=columns_to_drop)
+
+
+
+
+
+
 #convert Nan cities to 'Unknown'
 #drop winner NA columns
 #convert NA player of match to 'unknown'
@@ -99,6 +129,7 @@ continuous = pd.DataFrame(continuous, index = from02to22.index, columns = list(t
 to_encode = (from02to22.select_dtypes(include =['object'])) #test if anything is an object or category variable
 
 label_encoders = [] #make new encoder for each column
+encoded_data = pd.DataFrame()
 
 # Iterate over each column in 'to_encode' and encode using a separate LabelEncoder
 for col in to_encode:
@@ -155,6 +186,8 @@ outcomeDTC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictDTC})
 outcomeDTC['Actual'] = label_encoders[8].inverse_transform(outcomeDTC['Actual'])
 outcomeDTC['Predicted'] = label_encoders[8].inverse_transform(outcomeDTC['Predicted'])
 
+key = (label_encoders[8].classes_)
+
 
 ```
 
@@ -168,8 +201,7 @@ print("accuracy of decision tree:", metrics.accuracy_score(y_test, predictDTC)) 
 print("precision of decision tree:", metrics.precision_score(y_test, predictDTC, average = 'weighted'))
 print("recall of decision tree:", metrics.recall_score(y_test, predictDTC, average = 'weighted'))
 print("f1 of decision tree:", metrics.f1_score(y_test, predictDTC, average = 'weighted'))
-#print("ROCAUC macro of decision tree:", metrics.roc_auc_score(y_test, predictDTC))
-# print("ROCAUC micro of decision tree:", metrics.roc_auc_score(y_test, predictDTC, average = 'micro'))
+metrics.ConfusionMatrixDisplay(metrics.confusion_matrix(outcomeDTC['Actual'], outcomeDTC['Predicted'])).plot()
 
 
 # y_pred_proba = dtc.predict_proba(X_test)[::,1] #need probabilities for roc curve
@@ -200,6 +232,7 @@ print("f1 of decision tree:", metrics.f1_score(y_test, predictDTC, average = 'we
 
 ### Random Forest Classifier
 ```{python}
+
 #decision tree
 rfc = RandomForestClassifier(criterion='gini')
 rfc.fit(X_train, 
@@ -217,6 +250,7 @@ print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) 
 print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
 print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
 print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
+metrics.ConfusionMatrixDisplay(metrics.confusion_matrix(outcomeRFC['Actual'], outcomeRFC['Predicted'])).plot()
 ```
 
 ## Model Comparison and Selection
