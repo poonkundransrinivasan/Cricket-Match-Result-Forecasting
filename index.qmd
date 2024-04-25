@@ -73,11 +73,11 @@ print(from02to22.isna().sum()) #count NA values in columns
 print(pd.DataFrame.describe(from02to22)) #descriptive function to look at dataframe)
 
 
-winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
-winners
+# winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
+# winners
 
-corr = sns.pairplot(from02to22)
-corr
+# corr = sns.pairplot(from02to22)
+# corr
 
 
 
@@ -97,6 +97,11 @@ columns_to_drop = colNaCounts[colNaCounts >= 1000000].index.tolist()
 from02to22 = from02to22.drop(columns=columns_to_drop)
 
 
+#revalue winner column
+
+from02to22['winnerTeam'] = from02to22.apply(lambda row: 'team1' if row['winner'] == row['team1'] else 'team2', axis=1)
+
+
 
 
 
@@ -110,7 +115,7 @@ from02to22['city'] = from02to22['city'].fillna('Unknown')
 from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown') 
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
-from02to22 = from02to22.drop(columns = ['id'])
+from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date']) #is date specific data really useful?
 
 
 ```
@@ -151,8 +156,8 @@ data = pd.concat([encoded_data.reset_index(drop=True), continuous.reset_index(dr
 
 ## Feature Selection
 ```{python}
-X = data.drop('winner', axis = 1) #input
-y = data['winner'] #target
+X = data.drop('winnerTeam', axis = 1) #input
+y = data['winnerTeam'] #target
 
 selector = SelectKBest(score_func= f_classif, k = 10)
 top10 = selector.fit_transform(X,y) #create variable that is the top 10 best feautures
@@ -178,15 +183,16 @@ X_test = X_test_pca
 #training and testing models
 
  #decision tree
-dtc = DecisionTreeClassifier(criterion='gini')
-dtc.fit(X_train, 
-          y_train)
-predictDTC = dtc.predict(X_test)
-outcomeDTC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictDTC})
-outcomeDTC['Actual'] = label_encoders[8].inverse_transform(outcomeDTC['Actual'])
-outcomeDTC['Predicted'] = label_encoders[8].inverse_transform(outcomeDTC['Predicted'])
+lr = LogisticRegression()
 
-key = (label_encoders[8].classes_)
+lr.fit(X_train, 
+          y_train)
+predictLR = dtc.predict(X_test)
+outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
+outcomeLR['Actual'] = label_encoders[18].inverse_transform(outcomeLR['Actual'])
+outcomeLR['Predicted'] = label_encoders[18].inverse_transform(outcomeLR['Predicted'])
+
+key = (label_encoders[18].classes_)
 
 
 ```
@@ -194,26 +200,26 @@ key = (label_encoders[8].classes_)
 ## Model Validation
 ```{python}
 #Evaluating models
-#decision tree
-cvDT = cross_validate(dtc,X_train, y_train)
-print("cross validation of decision tree", cvDT)
-print("accuracy of decision tree:", metrics.accuracy_score(y_test, predictDTC)) #testing how accuracy of the models
-print("precision of decision tree:", metrics.precision_score(y_test, predictDTC, average = 'weighted'))
-print("recall of decision tree:", metrics.recall_score(y_test, predictDTC, average = 'weighted'))
-print("f1 of decision tree:", metrics.f1_score(y_test, predictDTC, average = 'weighted'))
-metrics.ConfusionMatrixDisplay(metrics.confusion_matrix(outcomeDTC['Actual'], outcomeDTC['Predicted'])).plot()
+#logistic regression
+cvLR = cross_validate(lr,X_train, y_train)
+print("cross validation of logistic regression", cvLR)
+print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
+print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
+print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
+print("f1 of logistic regression:", metrics.f1_score(y_test, predictLR, average = 'weighted'))
+print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
+print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
 
 
-# y_pred_proba = dtc.predict_proba(X_test)[::,1] #need probabilities for roc curve
-# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-# plt.plot(fpr,tpr)
-# plt.ylabel('True Positive Rate')
-# plt.xlabel('False Positive Rate')
-# plt.title('ROC Curve Decision Tree')
-# plt.show()
+y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+plt.plot(fpr,tpr)
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.title('ROC Curve Logistic Regression')
+plt.show()
 
-# print('')
-
+print('')
 
 
 
