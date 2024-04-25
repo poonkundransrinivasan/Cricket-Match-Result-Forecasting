@@ -115,7 +115,7 @@ from02to22['city'] = from02to22['city'].fillna('Unknown')
 from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown') 
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
-from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
+from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
 corr = sns.pairplot(from02to22)
 corr
 
