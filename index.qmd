@@ -1,5 +1,5 @@
 ---
-title: "Project Title"
+title: "'2023' Live Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Project Final"
 author: 
   - name: "Team name - Team member 1, Team member 2,..."
