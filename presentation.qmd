@@ -1,9 +1,9 @@
 ---
-title: "Project title"
+title: "‘2023’ Live Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Spring 2023 - Project Final"
-author: "Author names"
+author: "Ortmann Christian, Pappala Praveen Kumar, Poonkundran Srinivasan, Srinivasan Akash, Theeda Gowtham, Tiruthani Rajitha Reddy, Bhawari Tejas"
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: images/round-stadium-cricket-night-with-lights-evening_940927-15512.jpg
   data-background-size: stretch
   data-background-opacity: "0.7"
   data-slide-number: none
@@ -53,11 +53,9 @@ penguins = sns.load_dataset('penguins').dropna()
 
 # Using Quarto for presentations
 
-## Quarto
+## Introduction
 
--   The presentation is created using the Quarto CLI
-
--   `##` sets the start of a new slide
+Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use “live” data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match “update” we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
 
 ## Layouts
 

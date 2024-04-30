@@ -34,12 +34,13 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split as tts
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier 
+from sklearn.tree import DecisionTreeClassifier  
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.model_selection import cross_validate
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+import pickle
 ```
 
 
@@ -76,8 +77,8 @@ print(pd.DataFrame.describe(from02to22)) #descriptive function to look at datafr
 winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
 winners
 
-corr = sns.pairplot(from02to22)
-corr
+# corr = sns.pairplot(from02to22)
+# corr
 
 
 
@@ -116,8 +117,8 @@ from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown')
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
 from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
-corr = sns.pairplot(from02to22)
-corr
+# corr = sns.pairplot(from02to22)
+# corr
 
 ```
 
@@ -137,6 +138,8 @@ to_encode = (from02to22.select_dtypes(include =['object'])) #test if anything is
 label_encoders = [] #make new encoder for each column
 encoded_data = pd.DataFrame()
 
+encoding_dicts = {}
+
 # Iterate over each column in 'to_encode' and encode using a separate LabelEncoder
 for col in to_encode:
     # Create a new instance of LabelEncoder for the current column
@@ -147,6 +150,9 @@ for col in to_encode:
     
     # Store the encoder in the list
     label_encoders.append(encoder)
+
+    encoding_dicts[col] = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
+
 
 #patch the columns back together
 
@@ -259,8 +265,44 @@ plt.title('ROC Curve Random Forest')
 plt.show()
 ```
 
-## Model Comparison and Selection
+## Save the Model as a Pickel File
+
+```{python}
+# Step 2: Save the trained model to a pickle file
+# with open("data/cricketPrediction.pkl", "wb") as f:
+#     pickle.dump(rfc, f)
+    
+# Step 3: Load the model from the pickle file
+
+# with open("linear_regression_model.pkl", "rb") as f:
+#     loaded_model = pickle.load(f)
+
+
+```
 
 
 ## Model Implementation with Dashboard
 
+```{python}
+
+import requests
+
+url = "https://goto-brought-auction-deck.trycloudflare.com/analyzingtrends/getmatchbyid/1"  
+response = requests.get(url)
+
+if response.status_code == 200:  # Check if the request was successful
+    json_data = response.json()  # Convert response to JSON format
+    print(json_data['season'])  # Print the JSON data
+else:
+    print("Failed to retrieve data from the API.")
+
+```
+
+
+```{python}
+
+catVariables = from02to22.select_dtypes(include =['object'])
+
+catVariables.columns
+
+```
