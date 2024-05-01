@@ -1,7 +1,13 @@
 ---
 title: "‘2023’ Live Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Spring 2023 - Project Final"
-author: "Ortmann Christian, Pappala Praveen Kumar, Poonkundran Srinivasan, Srinivasan Akash, Theeda Gowtham, Tiruthani Rajitha Reddy, Bhawari Tejas"
+author: "Ortmann Christian<br>
+         Pappala Praveen Kumar<br>
+         Poonkundran Srinivasan<br>
+         Srinivasan Akash<br>
+         Theeda Gowtham<br>
+         Tiruthani Rajitha Reddy<br>
+         Bhawari Tejas"
 title-slide-attributes:
   data-background-image: images/round-stadium-cricket-night-with-lights-evening_940927-15512.jpg
   data-background-size: stretch
@@ -10,6 +16,10 @@ title-slide-attributes:
 format:
   revealjs:
     theme:  ['data/customtheming.scss']
+    transition: concave
+    background-transition: fade
+    scrollable: true
+    logo: images/icons8-competition-64.png
   
 editor: visual
 jupyter: python3
