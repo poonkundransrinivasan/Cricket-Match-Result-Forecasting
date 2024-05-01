@@ -19,7 +19,7 @@ format:
     transition: concave
     background-transition: fade
     scrollable: true
-    logo: images/icons8-competition-64.png
+    logo: images/crick.jpg
   
 editor: visual
 jupyter: python3
