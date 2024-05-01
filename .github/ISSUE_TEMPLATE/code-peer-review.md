@@ -1,9 +1,17 @@
-### Code Peer Review: [Feature/Branch Name]
+---
+name: Code peer review
+about: Peer review of project code
+title: Code peer review
+labels: ''
+assignees: ''
+---
 
-**Reviewer:** [Your Name]
+The following is the peer review of the project code by [name of team completing peer review]. The team members that participated in this review are 
 
-**Review Date:** [Insert Date]
-
+- [Full names of team member 1] - @[githubname]
+- [Full names of team member 2] - @[githubname]
+- [Full names of team member 3] - @[githubname]
+- ...
 ---
 
 #### 1. Purpose of Code
