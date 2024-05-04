@@ -25,7 +25,7 @@ jupyter: python3
 ---
 
 ## Abstract
-Add project abstract here.
+Our project predicts the match results, player performances, and significant events by using historical ODI data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement.
 
 
 ## Introduction
