@@ -91,7 +91,9 @@ Since its inception in the late 16th century, cricket has established itself as 
 In this project we will create a dashboard of a live, ongoing cricket match that updates and predict its plots and statistics at regular intervals.
 
 :::
-
+::: {.column width="50%"}
+![](images/Timeli.jpg)
+:::
 # Model Building{style="font-size: 0.7em;"}
 ::: incremental
 
