@@ -69,7 +69,7 @@ Since its inception in the late 16th century, cricket has established itself as 
 
 
 ## Project Goals
-
+In this project we will create a dashboard of a live, ongoing cricket match that updates and predict its plots and statistics at regular intervals.
 
 
 # Model Building
