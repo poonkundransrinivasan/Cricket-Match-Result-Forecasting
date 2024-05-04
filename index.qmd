@@ -29,7 +29,7 @@ Add project abstract here.
 
 
 ## Introduction
-Add project introduction here.
+Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use “live” data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match “update” we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
 
 ## Setup
 ```{python}
