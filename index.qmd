@@ -2,7 +2,13 @@
 title: "'2023' Live Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Project Final"
 author: 
-  - name: "Team name - Team member 1, Team member 2,..."
+  - name: "Christian Ortmann<br>
+         Pappala Praveen Kumar<br>
+         Poonkundran Srinivasan<br>
+         Srinivasan Akash<br>
+         Theeda Gowtham<br>
+         Tiruthani Rajitha Reddy<br>
+         Bhawari Tejas"
     affiliations:
       - name: "School of Information, University of Arizona"
 description: "Project description"
