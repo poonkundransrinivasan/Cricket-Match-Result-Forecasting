@@ -1,13 +1,7 @@
 ---
-title: "2023 "Live" Cricket Match Winner Predictions"
-subtitle: "INFO 523 - Spring 2023 - Project Final"
-author: "Christian Ortmann<br>
-         Pappala Praveen Kumar<br>
-         Poonkundran Srinivasan<br>
-         Srinivasan Akash<br>
-         Theeda Gowtham<br>
-         Tiruthani Rajitha Reddy<br>
-         Bhawari Tejas"
+title: "2023 'Live' Cricket Match Winner Predictions"
+subtitle: "INFO 523 - Spring 2024 - Project Final"
+author: "Christian Ortmann\nPappala Praveen Kumar\nPoonkundran Srinivasan\nSrinivasan Akash\nTheeda Gowtham\nTiruthani Rajitha Reddy\nBhawari Tejas"
 title-slide-attributes:
   data-background-image: images/round-stadium-cricket-night-with-lights-evening_940927-15512.jpg
   data-background-size: stretch
@@ -24,9 +18,9 @@ format:
 editor: visual
 jupyter: python3
 execute:
-  echo: false
-warning: false
-  message: false
+   echo: false
+   warning: false
+   message: false
 editor_options:
     chunk_output_type: console
 ---
@@ -194,6 +188,8 @@ from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winne
 # corr
 ```
 :::
+
+
 
 ## Logistic Regression{style="font-size: 0.7em;"}
 ::: incremental

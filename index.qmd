@@ -20,7 +20,6 @@ format:
 editor: visual
 execute:
   warning: false
-  echo: false
 jupyter: python3
 ---
 
