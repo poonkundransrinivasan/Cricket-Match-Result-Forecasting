@@ -135,7 +135,7 @@ from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winne
 
 ```
 
-## updated feature engineering
+## Updated feature engineering
 ```{python}
 
 import joblib
