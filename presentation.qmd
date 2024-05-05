@@ -1,13 +1,7 @@
 ---
-title: "‘2023’ Live Cricket Match Winner Predictions"
-subtitle: "INFO 523 - Spring 2023 - Project Final"
-author: "Ortmann Christian<br>
-         Pappala Praveen Kumar<br>
-         Poonkundran Srinivasan<br>
-         Srinivasan Akash<br>
-         Theeda Gowtham<br>
-         Tiruthani Rajitha Reddy<br>
-         Bhawari Tejas"
+title: "2023 'Live' Cricket Match Winner Predictions"
+subtitle: "INFO 523 - Spring 2024 - Project Final"
+author: "Christian Ortmann\nPappala Praveen Kumar\nPoonkundran Srinivasan\nSrinivasan Akash\nTheeda Gowtham\nTiruthani Rajitha Reddy\nBhawari Tejas"
 title-slide-attributes:
   data-background-image: images/round-stadium-cricket-night-with-lights-evening_940927-15512.jpg
   data-background-size: stretch
@@ -24,7 +18,11 @@ format:
 editor: visual
 jupyter: python3
 execute:
-  echo: false
+   echo: false
+   warning: false
+   message: false
+editor_options:
+    chunk_output_type: console
 ---
 
 ```{python}
@@ -33,7 +31,19 @@ execute:
 
 # Load packages here
 import pandas as pd
+import glob
 import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.model_selection import train_test_split as tts
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier  
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import metrics
+from sklearn.model_selection import cross_validate
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+import pickle
 
 ```
 
@@ -61,11 +71,285 @@ mtcars['speed'] = mtcars['horsepower'] / mtcars['weight']
 penguins = sns.load_dataset('penguins').dropna()
 ```
 
-# Using Quarto for presentations
+# Introduction {style="font-size: 0.7em;"}
+::: incremental
 
-## Introduction
+## ODI Cricket
 
 Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use “live” data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match “update” we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
+
+:::
+
+## Project Goals {style="font-size: 0.7em;"}
+::: incremental
+In this project we will create a dashboard of a live, ongoing cricket match that updates and predict its plots and statistics at regular intervals.
+
+:::
+## Description of datasets{style="font-size: 0.7em;"}
+::: incremental
+We’ll use two datasets:
+
+ODI_Match_Data.csv: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We’ll need this one to investigate partnerships between batsmen. It’s dimensions are 155432 rows of data by 23 variable columns. The data that appears in this proposal is a truncated version for ease of storage, but the project will utilize an API that will supply the entire dataset.
+
+ODI_Match_info.csv: Overlaps in data with the above but provides information on the umpire, performance, and the city the match took place. We’ll need this one to analyze the batting and bowling performance of each player. It’s dimensions are 2380 rows of data by 18 variable columns.
+:::
+
+::: {.column width="50%"}
+![](images/download.png)
+:::
+## Research goal{style="font-size: 0.7em;"}
+::: incremental
+Match Outcome Prediction -
+
+Use historical and current match data with logistic regression classification to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update every minute. Each time a statistic is updated, the prediction will update as well.
+
+:::
+
+## Mocking Live Data{style="font-size: 0.7em;"}
+::: incremental
+To avoid unnecessary costs associated with real-time data, we will split the data into two parts: past data and live data.
+
+The past data will include information from years 2002 to 2022, while the live data will consist of data from the year 2023. Each entry from 2023 will be read from the actual CSV file and entered into a database table with an interval of 10 to 20 seconds between two consecutive entries. These entries will be considered as live data and will be sent to the API caller.
+
+:::
+
+# Model Building{style="font-size: 0.7em;"}
+::: incremental
+
+
+## Exploratory Data Analysis{style="font-size: 0.7em;"}
+::: incremental
+```{python}
+info = pd.read_csv('data/ODI_Match_info.csv')
+info = info.rename(columns = {'id':'match_id'})
+
+#append all files together
+csv_files = ['data/output_1.csv','data/output_2.csv','data/output_3.csv','data/output_4.csv','data/output_5.csv','data/output_6.csv','data/output_7.csv','data/output_8.csv','data/output_9.csv']
+
+matchData = pd.concat([pd.read_csv(f,low_memory=False) for f in csv_files ], ignore_index=True)
+
+#merge frames on match ID column
+
+totalData = pd.merge(matchData, info, on = 'match_id') #merge by identical column 'match_id'
+totalData.drop(totalData.filter(regex='_y$').columns, axis=1, inplace=True) #drop duplicate columns
+
+totalData = totalData.rename(columns = {'season_x':'season', 'venue_x':'venue'})
+
+from02to22 = totalData[~totalData['season'].astype(str).str.startswith(('2023/2024','2023', '2022/23'))] #exclude 2023 data
+
+from02to22
+print(type(from02to22)) #confirm data is read in as a df
+print(from02to22.shape) #confirm data shape
+print(from02to22.dtypes) #understand the types of data in the df
+print(from02to22.isna().sum()) #count NA values in columns
+print(pd.DataFrame.describe(from02to22)) #descriptive function to look at dataframe)
+
+
+winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
+winners
+
+# corr = sns.pairplot(from02to22)
+# corr
+```
+
+
+:::
+
+
+## Data Manipulation & Feature Engineering{style="font-size: 0.7em;"}
+::: incremental
+```{python}
+#drop columns that have more than 1Million NaNs
+
+colNaCounts = from02to22.isna().sum()
+
+
+columns_to_drop = colNaCounts[colNaCounts >= 1000000].index.tolist()
+
+# Drop identified columns from the DataFrame
+from02to22 = from02to22.drop(columns=columns_to_drop)
+
+
+#revalue new winner column
+
+from02to22['winnerTeam'] = from02to22.apply(lambda row: 'team1' if row['winner'] == row['team1'] else 'team2', axis=1)
+
+#convert Nan cities to 'Unknown'
+#drop winner NA columns
+#convert NA player of match to 'unknown'
+#convert NA umpire 3 to 'unknown'
+
+from02to22['city'] = from02to22['city'].fillna('Unknown') 
+from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown') 
+from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
+from02to22 = from02to22.dropna(subset=['winner'])
+from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
+# corr = sns.pairplot(from02to22)
+# corr
+```
+:::
+
+
+
+## Logistic Regression{style="font-size: 0.7em;"}
+::: incremental
+- Split Data into Training and Testing Sets
+  - Partitioned the dataset into 80% training and 20% testing for model validation.
+
+- Train the Logistic Regression Model
+  - Fits a logistic regression model to the training data, a simple and efficient approach for classification.
+
+- Prediction and Evaluation
+  - Used the trained model to make predictions on the test set. Compare actual and predicted outcomes to gauge accuracy.
+
+
+:::
+
+## Pros and Cons of Logistic Regression{style="font-size: 0.7em;"}
+::: incremental
+  - Pros: Fast and straightforward implementation.
+  - Cons: May struggle with complex or non-linear relationships.
+:::
+
+## Logistic Regression ROC Curve and Accuracy{style="font-size: 0.7em;"}
+::: incremental
+
+- Cross-Validation of Logistic Regression
+  - We performed cross-validation on the logistic regression model to assess its performance across different subsets of the training data.
+
+- Evaluation of Model Accuracy and Other Metrics
+  - By computing the accuracy, precision, recall, and F1-score to understand how well the logistic regression model performs on the test set.
+  - We calculated both macro and micro averages for ROC AUC, offering insights into the model's ability to discriminate between classes.
+
+- Plot ROC Curve for Logistic Regression
+  - Generated the Receiver Operating Characteristic (ROC) curve to visualize the trade-off between true positive and false positive rates.
+  - This visualization helps in understanding the model's classification performance at various thresholds.
+
+- Plot Visualization
+  - The accuracy score provides a basic measure of the model's correctness, while precision, recall, and F1-score offer a more nuanced view. The ROC curve and ROC AUC scores are useful for evaluating model performance in a binary classification context.
+:::
+
+
+## Random Forest{style="font-size: 0.7em;"}
+::: incremental
+- Random Forest Training
+  - We trained the Random Forest classifier with the 'gini' criterion on the training data, then make predictions on the test set to assess its performance.
+
+- Evaluation of Random Forest Performance
+  - We computed the cross-validation results, accuracy, precision, recall, F1-score, and both macro and micro ROC AUC scores to evaluate the Random Forest model's overall effectiveness.
+
+- Plot ROC Curve for Random Forest
+  - We generated the Receiver Operating Characteristic (ROC) curve to visualize the model's true positive rate against the false positive rate, offering insights into the model's discrimination ability.
+
+:::
+
+## Advantages and Limitations{style="font-size: 0.7em;"}
+::: incremental
+  - Pros: Random Forest is generally robust, can handle high-dimensional data, and provides feature importance insights.
+  - Cons: It can have slower training times compared to simpler models, especially with large datasets or complex configurations.
+
+:::
+
+## Back-End API{style="font-size: 0.7em;"}
+::: incremental
+GET /current-performance
+
+Live Data: Will show the live stats (mocked) of an ongoing match between team A and B
+
+Prediction: Who will win out of Team A and B
+
+These APIs are subject to change, additions, or removals as we analyze the data.
+:::
+
+
+# Model Implementation with API{style="font-size: 0.7em;"}
+::: incremental
+
+```{python}
+
+
+# Step 3: Load the model from the pickle file
+
+# with open("linear_regression_model.pkl", "rb") as f:
+#     loaded_model = pickle.load(f)
+
+
+```
+```{python}
+
+import requests
+
+url = "https://goto-brought-auction-deck.trycloudflare.com/analyzingtrends/getmatchbyid/1"  
+response = requests.get(url)
+
+if response.status_code == 200:  # Check if the request was successful
+    json_data = response.json()  # Convert response to JSON format
+    print(json_data['season'])  # Print the JSON data
+else:
+    print("Failed to retrieve data from the API.")
+
+```
+
+
+```{python}
+
+loaded_model = None
+
+# Load the model from the pickle file
+with open("/Users/cortmann/Desktop/523 - Data Mining/localCricketPredictions/cricketPrediction.pkl", "rb") as f:
+    loaded_model = pickle.load(f)
+    
+predictRFC = loaded_model.predict(X_test)
+
+outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
+outcomeRFC['Actual'] = label_encoders[9].inverse_transform(outcomeRFC['Actual'])
+outcomeRFC['Predicted'] = label_encoders[9].inverse_transform(outcomeRFC['Predicted'])
+    
+
+
+# cvRF = cross_validate(loaded_model,X_train, y_train)
+# print("cross validation of random forest", cvRF)
+# print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
+# print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
+# print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
+# print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
+# print("ROCAUC macro of random forest:", metrics.roc_auc_score(y_test, predictRFC))
+# print("ROCAUC micro of random forest:", metrics.roc_auc_score(y_test, predictRFC, average = 'micro'))
+
+
+# y_pred_proba = loaded_model.predict_proba(X_test)[::,1]
+# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+# plt.plot(fpr,tpr)
+# plt.ylabel('True Positive Rate')
+# plt.xlabel('False Positive Rate')
+# plt.title('ROC Curve Random Forest')
+# plt.show()
+
+
+```
+:::
+
+
+# Demonstration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Layouts
 
