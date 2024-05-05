@@ -193,111 +193,60 @@ from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winne
 
 ## Logistic Regression{style="font-size: 0.7em;"}
 ::: incremental
-```{python}
+- Split Data into Training and Testing Sets
+  - Partitioned the dataset into 80% training and 20% testing for model validation.
 
-#split data into training and testing
-X_train, X_test, y_train, y_test = tts(top10, y, test_size = 0.2) #break into 4 groups for testing and training, make the training dataset 70% of the data and the testing dataset 30% https://builtin.com/data-science/train-test-split
-#PCA
-# pca = PCA(n_components = 5) #go from 10 components to 5 components
-# X_train_pca = pca.fit_transform(X_train)
-# X_test_pca = pca.transform(X_test)
+- Train the Logistic Regression Model
+  - Fits a logistic regression model to the training data, a simple and efficient approach for classification.
 
-# X_train = X_train_pca
-# X_test = X_test_pca
-
-#training and testing models
-
- #decision tree
-# lr = LogisticRegression()
-
-# lr.fit(X_train, 
-#           y_train)
-# predictLR = lr.predict(X_test)
-# outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
-# outcomeLR['Actual'] = label_encoders[9].inverse_transform(outcomeLR['Actual'])
-# outcomeLR['Predicted'] = label_encoders[9].inverse_transform(outcomeLR['Predicted'])
-
-# key = (label_encoders[9].classes_)
+- Prediction and Evaluation
+  - Used the trained model to make predictions on the test set. Compare actual and predicted outcomes to gauge accuracy.
 
 
-```
-- Pros: Fast training time, easy to implement
-- Cons:
+:::
 
+## Pros and Cons of Logistic Regression{style="font-size: 0.7em;"}
+::: incremental
+  - Pros: Fast and straightforward implementation.
+  - Cons: May struggle with complex or non-linear relationships.
 :::
 
 ## Logistic Regression ROC Curve and Accuracy{style="font-size: 0.7em;"}
 ::: incremental
 
-```{python}
-#Evaluating models
-#logistic regression
-cvLR = cross_validate(lr,X_train, y_train)
-print("cross validation of logistic regression", cvLR)
-print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
-print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
-print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
-print("f1 of logistic regression:", metrics.f1_score(y_test, predictLR, average = 'weighted'))
-print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
-print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
+- Cross-Validation of Logistic Regression
+  - We performed cross-validation on the logistic regression model to assess its performance across different subsets of the training data.
 
+- Evaluation of Model Accuracy and Other Metrics
+  - By computing the accuracy, precision, recall, and F1-score to understand how well the logistic regression model performs on the test set.
+  - We calculated both macro and micro averages for ROC AUC, offering insights into the model's ability to discriminate between classes.
 
-y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
-fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-plt.plot(fpr,tpr)
-plt.ylabel('True Positive Rate')
-plt.xlabel('False Positive Rate')
-plt.title('ROC Curve Logistic Regression')
-plt.show()
+- Plot ROC Curve for Logistic Regression
+  - Generated the Receiver Operating Characteristic (ROC) curve to visualize the trade-off between true positive and false positive rates.
+  - This visualization helps in understanding the model's classification performance at various thresholds.
 
-print('')
-
-
-
-```
+- Plot Visualization
+  - The accuracy score provides a basic measure of the model's correctness, while precision, recall, and F1-score offer a more nuanced view. The ROC curve and ROC AUC scores are useful for evaluating model performance in a binary classification context.
 :::
 
 
 ## Random Forest{style="font-size: 0.7em;"}
 ::: incremental
-```{python}
-#random forest
-rfc = RandomForestClassifier(criterion='gini')
-rfc.fit(X_train, 
-          y_train)
-predictRFC = rfc.predict(X_test)
-outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
-outcomeRFC['Actual'] = label_encoders[9].inverse_transform(outcomeRFC['Actual'])
-outcomeRFC['Predicted'] = label_encoders[9].inverse_transform(outcomeRFC['Predicted'])
+- Random Forest Training
+  - We trained the Random Forest classifier with the 'gini' criterion on the training data, then make predictions on the test set to assess its performance.
 
-#Evaluating models
-#random forest
-cvRF = cross_validate(rfc,X_train, y_train)
-print("cross validation of random forest", cvRF)
-print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
-print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
-print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
-print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
-print("ROCAUC macro of random forest:", metrics.roc_auc_score(y_test, predictRFC))
-print("ROCAUC micro of random forest:", metrics.roc_auc_score(y_test, predictRFC, average = 'micro'))
+- Evaluation of Random Forest Performance
+  - We computed the cross-validation results, accuracy, precision, recall, F1-score, and both macro and micro ROC AUC scores to evaluate the Random Forest model's overall effectiveness.
 
+- Plot ROC Curve for Random Forest
+  - We generated the Receiver Operating Characteristic (ROC) curve to visualize the model's true positive rate against the false positive rate, offering insights into the model's discrimination ability.
 
-y_pred_proba = rfc.predict_proba(X_test)[::,1]
-fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-plt.plot(fpr,tpr)
-plt.ylabel('True Positive Rate')
-plt.xlabel('False Positive Rate')
-plt.title('ROC Curve Random Forest')
-plt.show()
+:::
 
-#FOR LOCAL USE
-# Step 2: Save the trained model to a pickle file
-# with open("/Users/cortmann/Desktop/523 - Data Mining/localCricketPredictions/cricketPrediction.pkl", "wb") as f:
-#     pickle.dump(rfc, f)
-
-```
-- Pros: 
-- Cons: Slow training time
+## Advantages and Limitations{style="font-size: 0.7em;"}
+::: incremental
+  - Pros: Random Forest is generally robust, can handle high-dimensional data, and provides feature importance insights.
+  - Cons: It can have slower training times compared to simpler models, especially with large datasets or complex configurations.
 
 :::
 
