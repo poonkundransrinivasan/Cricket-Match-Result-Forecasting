@@ -101,7 +101,7 @@ ODI_Match_info.csv: Overlaps in data with the above but provides information on 
 :::
 
 ::: {.column width="50%"}
-![](images/Timeli.jpg)
+![](images/download.png)
 :::
 ## Research goal{style="font-size: 0.7em;"}
 ::: incremental
