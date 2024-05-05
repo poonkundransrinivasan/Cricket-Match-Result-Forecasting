@@ -2,7 +2,13 @@
 title: "'2023' Live Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Project Final"
 author: 
-  - name: "Team name - Team member 1, Team member 2,..."
+  - name: "Christian Ortmann<br>
+         Pappala Praveen Kumar<br>
+         Poonkundran Srinivasan<br>
+         Srinivasan Akash<br>
+         Theeda Gowtham<br>
+         Tiruthani Rajitha Reddy<br>
+         Bhawari Tejas"
     affiliations:
       - name: "School of Information, University of Arizona"
 description: "Project description"
@@ -14,16 +20,15 @@ format:
 editor: visual
 execute:
   warning: false
-  echo: false
 jupyter: python3
 ---
 
 ## Abstract
-Add project abstract here.
+Our project predicts the match results, player performances, and significant events by using historical ODI data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement.
 
 
 ## Introduction
-Add project introduction here.
+Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use “live” data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match “update” we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
 
 ## Setup
 ```{python}
@@ -367,20 +372,6 @@ with open("data/cricketPrediction.pkl", "wb") as f:
 
 ## Model Implementation with Dashboard
 
-```{python}
-
-import requests
-
-url = "https://goto-brought-auction-deck.trycloudflare.com/analyzingtrends/getmatchbyid/1"  
-response = requests.get(url)
-
-if response.status_code == 200:  # Check if the request was successful
-    json_data = response.json()  # Convert response to JSON format
-    print(json_data['season'])  # Print the JSON data
-else:
-    print("Failed to retrieve data from the API.")
-
-```
 
 
 ```{python}
@@ -388,7 +379,7 @@ else:
 loaded_model = None
 
 # Load the model from the pickle file
-with open("/Users/cortmann/Desktop/523 - Data Mining/localCricketPredictions/cricketPrediction.pkl", "rb") as f:
+with open("data/cricketPrediction.pkl", "rb") as f:
     loaded_model = pickle.load(f)
     
 predictRFC = loaded_model.predict(X_test)
@@ -420,19 +411,6 @@ outcomeRFC['Predicted'] = label_encoders[9].inverse_transform(outcomeRFC['Predic
 
 ```
 
-
-```{python}
-
-# Later, when you want to use them on new data
-loaded_label_encoder = joblib.load('data/label_encoder.joblib')
-loaded_min_max_scaler = joblib.load('data/min_max_scaler.joblib')
-
-# Transform new data using the loaded objects
-# new_encoded_labels = loaded_label_encoder.transform(new_labels)
-# new_scaled_data = loaded_min_max_scaler.transform(new_data)
-
-
-```
 
 
 
@@ -693,17 +671,17 @@ def getPredictionPercent(out):
 
 ```{python}
 
-out, liveJson, predictRFC = processLiveFeed()
+# out, liveJson, predictRFC = processLiveFeed()
 
-team1, team2, team1Name, team2Name = getPredictionPercent(out)
+# team1, team2, team1Name, team2Name = getPredictionPercent(out)
 
-zeros = np.count_nonzero(predictRFC == 0)
-total = len(predictRFC)
-ones = total - zeros
+# zeros = np.count_nonzero(predictRFC == 0)
+# total = len(predictRFC)
+# ones = total - zeros
 
-percTeam1 = (zeros/total) * 100
-percTeam2 = 100 - percTeam1
+# percTeam1 = (zeros/total) * 100
+# percTeam2 = 100 - percTeam1
 
-print(percTeam1)
-print(percTeam2)
+# print(percTeam1)
+# print(percTeam2)
 ```
