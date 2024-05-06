@@ -1,5 +1,5 @@
 ---
-title: "2023 'Live' Cricket Match Winner Predictions"
+title: "Forcasting Cricket Match Results"
 subtitle: "INFO 523 - Spring 2024 - Project Final"
 author: "Christian Ortmann, Pappala Praveen Kumar, Poonkundran Srinivasan, Srinivasan Akash, Theeda Gowtham, Tiruthani Rajitha Reddy, Bhawari Tejas"
 title-slide-attributes:
@@ -13,7 +13,7 @@ format:
     transition: concave
     background-transition: fade
     scrollable: true
-    logo: images/crick.jpg
+    logo: images/logo DD.png
   
 editor: visual
 jupyter: python3
@@ -42,6 +42,7 @@ editor_options:
 # from sklearn import metrics
 # from sklearn.model_selection import cross_validate
 # from sklearn.decomposition import PCA
+#from IPython.display import Image
 # import matplotlib.pyplot as plt
 # import pickle
 
@@ -72,43 +73,37 @@ editor_options:
 ```
 
 ## Introduction {style="font-size: 0.7em;"}
+
 ::: incremental
+-   Our project predicts the match results by using historical ODI cricket data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement.
 
-- Our project predicts the match results by using historical ODI cricket data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement. 
-
-- For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. Our idea is to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals. 
-
-
+-   For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. Our idea is to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals.
 :::
 
 ## Project Approach {style="font-size: 0.7em;"}
-::: incremental
-- The primary goal of our project is to use historical and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals. 
 
-- This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
+::: incremental
+-   The primary goal of our project is to use historical and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals.
+
+-   This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
 :::
-## Description of datasets{style="font-size: 0.7em;"}
-::: incremental
 
-For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. The past data will include information of ODI Matches from years 2002 to 2022, while the live data will consist of data from the year 2023. 
-We’ll use two datasets:
+## Description of datasets {style="font-size: 0.7em;"}
+
+::: incremental
+For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. The past data will include information of ODI Matches from years 2002 to 2022, while the live data will consist of data from the year 2023. We’ll use two datasets:
 
 ODI_Match_Data.csv: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We’ll need this one to investigate partnerships between batsmen. It’s dimensions are 155432 rows of data by 23 variable columns.
 
 ODI_Match_info.csv: Overlaps in data with the above but provides information on the umpire, performance, and the city the match took place. We’ll need this one to analyze the batting and bowling performance of each player. It’s dimensions are 2380 rows of data by 18 variable columns.
 :::
 
-
 # Model Building
 
+## Step 1: Exploratory Data Analysis {style="font-size: 0.7em;"}
 
-
-## Step 1: Exploratory Data Analysis{style="font-size: 0.7em;"}
 ::: incremental
-Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any.
-![](images/pairplot.png){fig-align="center" width="1300" height="600"}
-
-
+Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any. ![](images/pairplot.png){fig-align="center" width="1300" height="600"}
 
 ```{python}
 # info = pd.read_csv('data/ODI_Match_info.csv')
@@ -142,20 +137,19 @@ Here, we first carried out Data Preprocessing where we merged the match_data and
 # # corr = sns.pairplot(from02to22)
 # corr
 ```
-
 :::
 
+## Steps 2-4 {style="font-size: 0.7em;"}
 
-## Steps 2-4{style="font-size: 0.7em;"}
 ::: incremental
+-   Step 2: Data Manipulation - During a thorough process of Data Cleaning, we dropped some columns which were largely empty and replaced some empties with ‘Unknown’.
 
-- Step 2: Data Manipulation - During a thorough process of Data Cleaning, we dropped some columns which were largely empty and replaced some empties with ‘Unknown’.
+-   Step 3: Feature Engineering - We normalized the continuous data and encoded categorical variables.
 
-- Step 3: Feature Engineering -  We normalized the continuous data and encoded categorical variables.
+-   Step 4 Feature selection - we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature.
 
-- Step 4 Feature selection - we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature.
+-   The input features are - \['ball', 'batting_team', 'bowling_team', 'non_striker', 'bowler', 'runs_off_bat', 'team1', 'team2', 'toss_winner', 'dl_applied'\]
 
-- The input features are - ['ball', 'batting_team', 'bowling_team', 'non_striker', 'bowler', 'runs_off_bat', 'team1', 'team2', 'toss_winner', 'dl_applied']
 ```{python}
 #drop columns that have more than 1Million NaNs
 
@@ -187,35 +181,27 @@ Here, we first carried out Data Preprocessing where we merged the match_data and
 ```
 :::
 
-
 # Model Training and Validation
 
-## Logistic Regression{style="font-size: 0.7em;"}
-::: incremental
+## Logistic Regression {style="font-size: 0.7em;"}
 
+::: incremental
 From the results of Logistic regression, we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model.
 
 ![](images/lr_roc_curve.png){fig-align="center" width="1300" height="600"}
-
 :::
 
+## Random Forest Classifier {style="font-size: 0.7em;"}
 
-## Random Forest Classifier{style="font-size: 0.7em;"}
 ::: incremental
-
 Now we take the Random Forest Classifier, as we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model.
 
 ![](images/rfc_roc_curve.png){fig-align="center" width="1300" height="600"}
-
-
 :::
 
-
-
-
 # Model Implementation & Demonstration {style="font-size: 0.7em;"}
-::: incremental
 
+::: incremental
 ```{python}
 
 
@@ -226,6 +212,7 @@ Now we take the Random Forest Classifier, as we observe the accuracy and precisi
 
 
 ```
+
 ```{python}
 
 import requests
@@ -240,7 +227,6 @@ import requests
 #     print("Failed to retrieve data from the API.")
 
 ```
-
 
 ```{python}
 
@@ -276,30 +262,10 @@ import requests
 # plt.title('ROC Curve Random Forest')
 # plt.show()
 
-
+#{fig-align="center" width="1300" height = "600"}
 ```
 :::
 
-
 # Thank You
-
-![](images/cricketthankyou.jpg){fig-align="center" width="1300" height = "600"}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+       
+<img src="images/Leonardo Di Caprio.gif" alt="Leonardo Di Caprio" style="display:block; margin:auto; width:1300px; height:600px;">
