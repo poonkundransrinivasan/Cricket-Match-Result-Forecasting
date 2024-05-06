@@ -265,6 +265,18 @@ import requests
 ```
 :::
 
+# Demonstration
+
+::: incremental
+
+The following links direct us to the webpage where you can find the demonstration of our model which predicts the winner results of ODI 2023 cricket matches.
+
+https://de-cases-articles-premier.trycloudflare.com/
+
+https://indexes-oct-cafe-decided.trycloudflare.com/analyzingtrends/getcurrentlivedata
+
+:::
+
 # Thank You
        
 <img src="images/Leonardo Di Caprio.gif" alt="Leonardo Di Caprio" style="display:block; margin:auto; width:1300px; height:600px;">
