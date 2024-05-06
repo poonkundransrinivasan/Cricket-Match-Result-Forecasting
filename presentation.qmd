@@ -198,7 +198,9 @@ Now we take the Random Forest Classifier, as we observe the accuracy and precisi
 ![](images/rfc_roc_curve.png){fig-align="center" width="1300" height="600"}
 :::
 
-# Model Implementation & Demonstration {style="font-size: 0.7em;"}
+# Implementation {style="font-size: 0.7em;"}
+
+![](images/finalblockdiag.png){fig-align="center" width="1300" height="600"}
 
 ::: incremental
 ```{python}
