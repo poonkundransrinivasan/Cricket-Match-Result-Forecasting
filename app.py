@@ -18,9 +18,14 @@ loaded_model = None
 with open("data/cricketPrediction.pkl", "rb") as f:
     loaded_model = pickle.load(f)
 
+driveUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSd_HEZE5_vyvgzAcOIXqaCvgefTD-B8suE03j46W_pryfgcHBNAne_mVSKNHTIAbB03BkjxbvXFHlr/pub?gid=0&single=true&output=csv"
+
+x = pd.read_csv(driveUrl)
+
+mainUrl = x["local"][0]
 
 
-mainUrl = "http://127.0.0.1:8100"
+# mainUrl = "http://127.0.0.1:8100"
 
 getEntireLiveDataApi = "/analyzingtrends/getentirelivedata" 
 getCurrentLiveDataApi = "/analyzingtrends/getcurrentlivedata"
