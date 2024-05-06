@@ -265,13 +265,13 @@ X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.2)
 #training and testing models
 
 #decision tree
-lr = LogisticRegression()
+# lr = LogisticRegression()
 
-lr.fit(X_train, 
-          y_train)
-predictLR = lr.predict(X_test)
+# lr.fit(X_train, 
+#           y_train)
+# predictLR = lr.predict(X_test)
 
-outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
+# outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
 
 
 
@@ -284,22 +284,22 @@ The results of Logistic regression are now cross validated and their performance
 ```{python}
 #Evaluating models
 #logistic regression
-cvLR = cross_validate(lr,X_train, y_train)
-print("cross validation of logistic regression", cvLR)
-print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
-print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
-print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
-print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
-print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
+# cvLR = cross_validate(lr,X_train, y_train)
+# print("cross validation of logistic regression", cvLR)
+# print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
+# print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
+# print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
+# print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
+# print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
 
 
-y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
-fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-plt.plot(fpr,tpr)
-plt.ylabel('True Positive Rate')
-plt.xlabel('False Positive Rate')
-plt.title('ROC Curve Logistic Regression')
-plt.show()
+# y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
+# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+# plt.plot(fpr,tpr)
+# plt.ylabel('True Positive Rate')
+# plt.xlabel('False Positive Rate')
+# plt.title('ROC Curve Logistic Regression')
+# plt.show()
 
 
 
@@ -437,9 +437,9 @@ y = cricDataSet['winnerTeam'] #target
 
 X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.2) 
 
-rfc = RandomForestClassifier(criterion='gini')
-rfc.fit(X_train, 
-          y_train)
+# rfc = RandomForestClassifier(criterion='gini')
+# rfc.fit(X_train, 
+#           y_train)
 
 ```
 

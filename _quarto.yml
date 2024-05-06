@@ -20,6 +20,7 @@ website:
         href: presentation.qmd
       - text: About
         href: about.qmd
+  favicon: images/crick.jpg
 
 format:
   html:
