@@ -1,7 +1,7 @@
 ---
 title: "2023 'Live' Cricket Match Winner Predictions"
 subtitle: "INFO 523 - Spring 2024 - Project Final"
-author: "Christian Ortmann\nPappala Praveen Kumar\nPoonkundran Srinivasan\nSrinivasan Akash\nTheeda Gowtham\nTiruthani Rajitha Reddy\nBhawari Tejas"
+author: "Christian Ortmann, Pappala Praveen Kumar, Poonkundran Srinivasan, Srinivasan Akash, Theeda Gowtham, Tiruthani Rajitha Reddy, Bhawari Tejas"
 title-slide-attributes:
   data-background-image: images/round-stadium-cricket-night-with-lights-evening_940927-15512.jpg
   data-background-size: stretch
@@ -71,22 +71,22 @@ editor_options:
 # penguins = sns.load_dataset('penguins').dropna()
 ```
 
-# Introduction {style="font-size: 0.7em;"}
+## Introduction {style="font-size: 0.7em;"}
 ::: incremental
 
-## ODI Cricket
-
-Since its inception in the late 16th century, cricket has established itself as once of the most popular sports on the planet with yearly viewers numbering in the billions. With so many viewers, prediction of match outcomes have become a hot topic for enthusiasts and sports bettors alike. We plan to use “live” data from 2023 to predict the outcome of the match based on a logistic regression model that takes into account features that are dynamically changing. With each match “update” we will feed the new data into our model to update the prediction it is making. By doing so we can dynamically see how the outcome of a game changes as the match progresses.
+Our project predicts the match results by using historical ODI cricket data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement. For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. Our idea is to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals. This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
 
 :::
 
-## Project Goals {style="font-size: 0.7em;"}
+## Project Approach {style="font-size: 0.7em;"}
 ::: incremental
-In this project we will create a dashboard of a live, ongoing cricket match that updates and predict its plots and statistics at regular intervals.
-
+The primary goal of our project is to use historical and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals. This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
 :::
 ## Description of datasets{style="font-size: 0.7em;"}
 ::: incremental
+
+For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. The past data will include information of ODI Matches from years 2002 to 2022, while the live data will consist of data from the year 2023. Each entry from 2023 will be read from the actual CSV file and entered into a database table with an interval of 10 to 20 seconds between two consecutive entries. These entries will be considered as live data and will be sent to the API caller.
+
 We’ll use two datasets:
 
 ODI_Match_Data.csv: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We’ll need this one to investigate partnerships between batsmen. It’s dimensions are 155432 rows of data by 23 variable columns. The data that appears in this proposal is a truncated version for ease of storage, but the project will utilize an API that will supply the entire dataset.
@@ -94,31 +94,19 @@ ODI_Match_Data.csv: Provides facts about the location and season of the cricket 
 ODI_Match_info.csv: Overlaps in data with the above but provides information on the umpire, performance, and the city the match took place. We’ll need this one to analyze the batting and bowling performance of each player. It’s dimensions are 2380 rows of data by 18 variable columns.
 :::
 
-::: {.column width="50%"}
-![](images/download.png)
-:::
-## Research goal{style="font-size: 0.7em;"}
+
+# Model Building
+
+
+
+## Step 1: Exploratory Data Analysis{style="font-size: 0.7em;"}
 ::: incremental
-Match Outcome Prediction -
+Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any.
 
-Use historical and current match data with logistic regression classification to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update every minute. Each time a statistic is updated, the prediction will update as well.
-
-:::
-
-## Mocking Live Data{style="font-size: 0.7em;"}
-::: incremental
-To avoid unnecessary costs associated with real-time data, we will split the data into two parts: past data and live data.
-
-The past data will include information from years 2002 to 2022, while the live data will consist of data from the year 2023. Each entry from 2023 will be read from the actual CSV file and entered into a database table with an interval of 10 to 20 seconds between two consecutive entries. These entries will be considered as live data and will be sent to the API caller.
-
-:::
-
-# Model Building{style="font-size: 0.7em;"}
-::: incremental
+![](images/pairplot.png){fig-align="center" width="1800"}
 
 
-## Exploratory Data Analysis{style="font-size: 0.7em;"}
-::: incremental
+
 ```{python}
 # info = pd.read_csv('data/ODI_Match_info.csv')
 # info = info.rename(columns = {'id':'match_id'})
@@ -152,12 +140,19 @@ The past data will include information from years 2002 to 2022, while the live d
 # corr
 ```
 
-
 :::
 
 
-## Data Manipulation & Feature Engineering{style="font-size: 0.7em;"}
+## Steps 2-4{style="font-size: 0.7em;"}
 ::: incremental
+
+- Step 2: Data Manipulation - During a thorough process of Data Cleaning, we dropped some columns which were largely empty and replaced some empties with ‘Unknown’.
+
+- Step 3: Feature Engineering -  We normalized the continuous data and encoded categorical variables.
+
+- Step 4 Feature selection - we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature.
+
+ The input features are - ['ball', 'batting_team', 'bowling_team', 'non_striker', 'bowler', 'runs_off_bat', 'team1', 'team2', 'toss_winner', 'dl_applied']
 ```{python}
 #drop columns that have more than 1Million NaNs
 
@@ -190,79 +185,32 @@ The past data will include information from years 2002 to 2022, while the live d
 :::
 
 
+# Model Training and Validation
 
 ## Logistic Regression{style="font-size: 0.7em;"}
 ::: incremental
-- Split Data into Training and Testing Sets
-  - Partitioned the dataset into 80% training and 20% testing for model validation.
 
-- Train the Logistic Regression Model
-  - Fits a logistic regression model to the training data, a simple and efficient approach for classification.
+From the results of Logistic regression, we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model.
 
-- Prediction and Evaluation
-  - Used the trained model to make predictions on the test set. Compare actual and predicted outcomes to gauge accuracy.
-
+![](images/lr_roc_curve.png){fig-align="center" width="1800"}
 
 :::
 
-## Pros and Cons of Logistic Regression{style="font-size: 0.7em;"}
-::: incremental
-  - Pros: Fast and straightforward implementation.
-  - Cons: May struggle with complex or non-linear relationships.
-:::
 
-## Logistic Regression ROC Curve and Accuracy{style="font-size: 0.7em;"}
+## Random Forest Classifier{style="font-size: 0.7em;"}
 ::: incremental
 
-- Cross-Validation of Logistic Regression
-  - We performed cross-validation on the logistic regression model to assess its performance across different subsets of the training data.
+Now we take the Random Forest Classifier, as we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model.
 
-- Evaluation of Model Accuracy and Other Metrics
-  - By computing the accuracy, precision, recall, and F1-score to understand how well the logistic regression model performs on the test set.
-  - We calculated both macro and micro averages for ROC AUC, offering insights into the model's ability to discriminate between classes.
+![](images/rfc_roc_curve.png){fig-align="center" width="1800"}
 
-- Plot ROC Curve for Logistic Regression
-  - Generated the Receiver Operating Characteristic (ROC) curve to visualize the trade-off between true positive and false positive rates.
-  - This visualization helps in understanding the model's classification performance at various thresholds.
 
-- Plot Visualization
-  - The accuracy score provides a basic measure of the model's correctness, while precision, recall, and F1-score offer a more nuanced view. The ROC curve and ROC AUC scores are useful for evaluating model performance in a binary classification context.
 :::
 
 
-## Random Forest{style="font-size: 0.7em;"}
-::: incremental
-- Random Forest Training
-  - We trained the Random Forest classifier with the 'gini' criterion on the training data, then make predictions on the test set to assess its performance.
-
-- Evaluation of Random Forest Performance
-  - We computed the cross-validation results, accuracy, precision, recall, F1-score, and both macro and micro ROC AUC scores to evaluate the Random Forest model's overall effectiveness.
-
-- Plot ROC Curve for Random Forest
-  - We generated the Receiver Operating Characteristic (ROC) curve to visualize the model's true positive rate against the false positive rate, offering insights into the model's discrimination ability.
-
-:::
-
-## Advantages and Limitations{style="font-size: 0.7em;"}
-::: incremental
-  - Pros: Random Forest is generally robust, can handle high-dimensional data, and provides feature importance insights.
-  - Cons: It can have slower training times compared to simpler models, especially with large datasets or complex configurations.
-
-:::
-
-## Back-End API{style="font-size: 0.7em;"}
-::: incremental
-GET /current-performance
-
-Live Data: Will show the live stats (mocked) of an ongoing match between team A and B
-
-Prediction: Who will win out of Team A and B
-
-These APIs are subject to change, additions, or removals as we analyze the data.
-:::
 
 
-# Model Implementation with API{style="font-size: 0.7em;"}
+# Model Implementation & Demonstration {style="font-size: 0.7em;"}
 ::: incremental
 
 ```{python}
@@ -330,7 +278,7 @@ import requests
 :::
 
 
-# Demonstration
+# Thank You
 
 
 
