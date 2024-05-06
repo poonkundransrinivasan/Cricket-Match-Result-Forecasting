@@ -1,19 +1,14 @@
 ---
-title: "'2023' Live Cricket Match Winner Predictions"
+title: "Cricket Match Results Forecasting"
 subtitle: "INFO 523 - Project Final"
 author: 
-  - name: "Christian Ortmann<br>
-         Pappala Praveen Kumar<br>
-         Poonkundran Srinivasan<br>
-         Srinivasan Akash<br>
-         Theeda Gowtham<br>
-         Tiruthani Rajitha Reddy<br>
-         Bhawari Tejas"
+  - name: Daaku Data Singh
     affiliations:
       - name: "School of Information, University of Arizona"
 description: "Using Prediction Model to predict Live ODI Cricket Match Winners"
 format:
    html:
+   code-fold: true
     code-tools: true
     code-overflow: wrap
     embed-resources: true
@@ -354,10 +349,10 @@ ROCAUC micro of random forest: 0.9897132632925527\
 \
 ![](images/rfc_roc_curve.png)
 
-## Model Implementation
+## Model Recreation for Main Application
 
-Finally, we display the model prediction on a webpage and take you through our journey of prediction!
-
+### Label Encoding
+Encoding the labels that contains team name and player name and saving them into json file.
 ```{python}
 
 import json
@@ -415,6 +410,10 @@ temp['toss_decision'] = temp['toss_decision'].apply(lambda x: 0 if x == "bat" el
 
 ```
 
+### Min - Max scaling
+
+Scaling all the numerical features and saving the MinMaxScaler object as a .joblib file.
+
 ```{python}
 min_max_scaler = MinMaxScaler()
 
@@ -423,6 +422,10 @@ temp[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = min_max_scal
 joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
 
 ```
+
+### Model retraining
+
+Re-training the model such with the encoded features and scaled features and saving the model as a pickle file. 
 
 ```{python}
 
@@ -448,149 +451,3 @@ with open("data/cricketPrediction.pkl", "wb") as f:
 
 ```
 
-```{python}
-
-import requests
-import pandas as pd
-
-loaded_model = None
-
-with open("data/cricketPrediction.pkl", "rb") as f:
-    loaded_model = pickle.load(f)
-
-
-
-mainUrl = "http://127.0.0.1:8100"
-
-getEntireLiveDataApi = "/analyzingtrends/getentirelivedata" 
-getCurrentLiveDataApi = "/analyzingtrends/getcurrentlivedata"
-
-
-
-def getAllLiveData():
-  response = requests.get(mainUrl + getEntireLiveDataApi)
-
-  liveData = []
-
-  if response.status_code == 200:  # Check if the request was successful
-      json_data = response.json()  # Convert response to JSON format
-      liveData = pd.DataFrame(json_data)
-  else:
-      print("Failed to retrieve data from the API.")
-
-  return liveData
-
-def getCurrentLiveData():
-  response = requests.get(mainUrl + getCurrentLiveDataApi)
-  liveList = []
-  liveData = None
-  json_data = None
-
-  if response.status_code == 200:  # Check if the request was successful
-      json_data = response.json()  # Convert response to JSON format
-      liveList.append(json_data)
-      liveData = pd.DataFrame(liveList)
-  else:
-      print("Failed to retrieve data from the API.")
-
-  return liveData, json_data    
-
-
-def processLiveFeed():
-
-    liveData0, liveJson = getCurrentLiveData()
-    liveData0 = getAllLiveData()
-
-    new_columns = ['match_id', 'season', 'venue', 'innings', 'ball', 'batting_team',
-                'bowling_team', 'striker', 'non_striker', 'bowler', 'runs_off_bat',
-                'extras', 'wides', 'noballs', 'city', 'date', 'team1', 'team2',
-                'toss_winner', 'toss_decision', 'result', 'dl_applied', 'winner',
-                'win_by_runs', 'win_by_wickets', 'player_of_match', 'total_runs', 'id']
-
-    # Rename columns
-    liveData0.columns = new_columns
-    liveData = liveData0.filter(['innings', 'ball', 'batting_team', 'bowling_team', 'striker',
-       'non_striker', 'bowler', 'runs_off_bat', 'extras', 'team1', 'team2',
-       'toss_winner', 'toss_decision', 'dl_applied'])
-
-
-    liveData['toss_winner'] = liveData.apply(lambda row: 'team1' if row['toss_winner'] == row['team1'] else 'team2', axis=1)
-
-
-    # Load the team map dictionary from the saved JSON file
-    with open('data/team_map.json', 'r') as f:
-        team_map_loaded = json.load(f)
-
-    with open('data/player_map.json', 'r') as f:
-        player_map_loaded = json.load(f)
-
-    team_map_loaded = dict(team_map_loaded)
-    player_map_loaded = dict(player_map_loaded)
-
-    liveData['team1'] = liveData['team1'].apply(lambda x: team_map_loaded.get(x))
-
-    liveData['team2'] = liveData['team2'].apply(lambda x: team_map_loaded.get(x))
-
-    liveData['batting_team'] = liveData['batting_team'].apply(lambda x: team_map_loaded.get(x))
-
-    liveData['bowling_team'] = liveData['bowling_team'].apply(lambda x: team_map_loaded.get(x))
-
-    liveData['striker'] = liveData['striker'].apply(lambda x: player_map_loaded.get(x))
-
-    liveData['non_striker'] = liveData['non_striker'].apply(lambda x: player_map_loaded.get(x))
-
-    liveData['bowler'] = liveData['bowler'].apply(lambda x: player_map_loaded.get(x))
-
-    liveData['toss_winner'] = liveData['toss_winner'].apply(lambda x: 0 if x == "team1" else 1)
-
-    liveData['toss_decision'] = liveData['toss_decision'].apply(lambda x: 0 if x == "bat" else 1)
-
-    loaded_min_max_scaler = joblib.load('data/min_max_scaler.joblib')
-
-    liveData[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = loaded_min_max_scaler.transform(liveData[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']])
-
-
-    predictRFC = loaded_model.predict(liveData)
-
-    # Apply mapping function directly to the predicted values (assuming predictRFC is a Series or array)
-    print(predictRFC)
-    out = pd.Series(predictRFC).apply(map_team)
-    out = pd.DataFrame(out)
-    out['match_id'] = liveData0['match_id']
-    print(liveData.head())
-    
-    # countTeamPrediction = Counter(out[0])
-
-    # print(countTeamPrediction)
-
-    return out, liveJson, predictRFC
-
-def map_team(value):
-    if value == 0:
-        return 'team1'
-    else:
-        return 'team2'
-
-
-def getPredictionPercent(out):
-    out = dict(out)
-    team1 = out.get("team1")
-    team2 = out.get("team2")
-
-    if(team1 == None):
-        team1 = 0
-
-    if(team2 == None):
-        team2 = 0
-
-    liveData0, liveJson = getCurrentLiveData()
-
-    team1Name = liveJson.get("team1")
-    team2Name = liveJson.get("team2")
-
-    print(team1)
-    print(team2)
-
-    return int(team1), int(team2), team1Name, team2Name
-
-```
