@@ -91,7 +91,6 @@ editor_options:
 ## Description of datasets {style="font-size: 0.7em;"}
 
 ::: incremental
-
 ODI_Match_Data.csv: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We’ll need this one to investigate partnerships between batsmen. It’s dimensions are 155432 rows of data by 23 variable columns.
 
 ODI_Match_info.csv: Overlaps in data with the above but provides information on the umpire, performance, and the city the match took place. We’ll need this one to analyze the batting and bowling performance of each player. It’s dimensions are 2380 rows of data by 18 variable columns.
@@ -268,15 +267,15 @@ import requests
 # Demonstration
 
 ::: incremental
-
 The following links direct us to the webpage where you can find the demonstration of our model which predicts the winner results of ODI 2023 cricket matches.
+:::
 
-https://de-cases-articles-premier.trycloudflare.com/
+::: incremental
+[Web Application](https://de-cases-articles-premier.trycloudflare.com)
 
-https://indexes-oct-cafe-decided.trycloudflare.com/analyzingtrends/getcurrentlivedata
-
+[Check Winner](https://indexes-oct-cafe-decided.trycloudflare.com/analyzingtrends/getcurrentlivedata)
 :::
 
 # Thank You
-       
-<img src="images/Leonardo Di Caprio.gif" alt="Leonardo Di Caprio" style="display:block; margin:auto; width:1300px; height:600px;">
+
+<img src="images/Leonardo Di Caprio.gif" alt="Leonardo Di Caprio" style="display:block; margin:auto; width:1300px; height:600px;"/>
