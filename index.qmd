@@ -92,6 +92,8 @@ winners
 # corr
 
 
+
+
 ```
 
 ## Data Cleaning
@@ -128,16 +130,12 @@ from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown')
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
 from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
-
 # corr = sns.pairplot(from02to22)
 # corr
 
 ```
 
-## Feature Engineering
-
-The next step is the Feature Engineering where we: - Normalized the continuous data - Encoded categorical variables
-
+## Updated feature engineering
 ```{python}
 
 import joblib
@@ -161,6 +159,71 @@ for col in cricDataSet.columns:
 # Save label encoder and scaler objects to disk
 for col, encoder in label_encoders.items():
     joblib.dump(encoder, f'data/label_encoder_{col}.joblib')
+
+cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = min_max_scaler.fit_transform(cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']])
+
+# # Save label encoder and scaler objects to disk
+# with open("data/label_encoder.pkl", "wb") as f:
+#     pickle.dump(label_encoder, f)
+
+# with open("data/min_max_scaler.pkl", "wb") as f:
+#     pickle.dump(min_max_scaler, f)
+
+joblib.dump(label_encoder, 'data/label_encoder.joblib')
+joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
+
+from02to22.head()
+```
+
+
+```{python}
+
+cricDataSet
+
+
+```
+
+
+## Feature Engineering
+The next step is the Feature Engineering where we:
+ - Normalized the continuous data
+ - Encoded categorical variables
+```{python}
+#normalize continuous data because we dont have a normal distribution
+
+to_norm = (from02to22.select_dtypes(include =['int64', 'float64'])) #select continuous variables
+
+continuous = MinMaxScaler().fit_transform(to_norm) #fit and transform min max scaler (normalizes)
+continuous = pd.DataFrame(continuous, index = from02to22.index, columns = list(to_norm))
+
+#encode categorical variables
+
+to_encode = (from02to22.select_dtypes(include =['object'])) #test if anything is an object or category variable
+
+label_encoders = [] #make new encoder for each column
+encoded_data = pd.DataFrame()
+
+encoding_dicts = {}
+
+# Iterate over each column in 'to_encode' and encode using a separate LabelEncoder
+for col in to_encode:
+    # Create a new instance of LabelEncoder for the current column
+    encoder = LabelEncoder()
+    
+    # Fit and transform the data in 'from02to22[col]'
+    encoded_data[col] = encoder.fit_transform(from02to22[col])
+    
+    # Store the encoder in the list
+    label_encoders.append(encoder)
+
+    encoding_dicts[col] = dict(zip(encoder.classes_, encoder.transform(encoder.classes_)))
+
+
+#patch the columns back together
+
+data = pd.concat([encoded_data.reset_index(drop=True), continuous.reset_index(drop=True)], axis = 1) #reset indices to avoid errors in concat
+
+
 ```
 
 ## Feature Selection
