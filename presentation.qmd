@@ -1,5 +1,5 @@
 ---
-title: "Forcasting Cricket Match Results"
+title: "Cricket Match Results Forcasting"
 subtitle: "INFO 523 - Spring 2024 - Project Final"
 author: "Christian Ortmann, Pappala Praveen Kumar, Poonkundran Srinivasan, Srinivasan Akash, Theeda Gowtham, Tiruthani Rajitha Reddy, Bhawari Tejas"
 title-slide-attributes:
@@ -77,13 +77,13 @@ editor_options:
 ::: incremental
 -   Our project predicts the match results by using historical ODI cricket data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement.
 
--   For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. Our idea is to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals.
+-   We have considered dataset from year 2002 to 2022 as past data. using this following data we have trainned the following machine learning model to predict the current years match winner (considering 2023 as the current year).
 :::
 
 ## Project Approach {style="font-size: 0.7em;"}
 
 ::: incremental
--   The primary goal of our project is to use historical and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals.
+-   The primary goal of our project is to use past and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals.
 
 -   This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
 :::
@@ -91,7 +91,6 @@ editor_options:
 ## Description of datasets {style="font-size: 0.7em;"}
 
 ::: incremental
-For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. The past data will include information of ODI Matches from years 2002 to 2022, while the live data will consist of data from the year 2023. We’ll use two datasets:
 
 ODI_Match_Data.csv: Provides facts about the location and season of the cricket matches along with team information and the play results from each team member. We’ll need this one to investigate partnerships between batsmen. It’s dimensions are 155432 rows of data by 23 variable columns.
 
@@ -199,17 +198,17 @@ Now we take the Random Forest Classifier, as we observe the accuracy and precisi
 ![](images/rfc_roc_curve.png){fig-align="center" width="1300" height="600"}
 :::
 
-# Model Implementation & Demonstration {style="font-size: 0.7em;"}
+# Implementation {style="font-size: 0.7em;"}
+
+![](images/finalblockdiag.png){fig-align="center" width="1300" height="600"}
 
 ::: incremental
 ```{python}
-
 
 # Step 3: Load the model from the pickle file
 
 # with open("linear_regression_model.pkl", "rb") as f:
 #     loaded_model = pickle.load(f)
-
 
 ```
 
