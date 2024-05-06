@@ -90,8 +90,8 @@ print(pd.DataFrame.describe(from02to22)) #descriptive function to look at datafr
 winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
 winners
 
-# corr = sns.pairplot(from02to22)
-# corr
+corr = sns.pairplot(from02to22) #determine any correlations in the data
+corr
 
 
 
@@ -130,12 +130,13 @@ from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown')
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
 from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
-# corr = sns.pairplot(from02to22)
-# corr
+
+corr = sns.pairplot(from02to22)
+corr
 
 ```
 
-## Updated feature engineering
+## Feature Engineering for Model Implementation
 ```{python}
 
 import joblib
@@ -176,12 +177,6 @@ from02to22.head()
 ```
 
 
-```{python}
-
-cricDataSet
-
-
-```
 
 
 ## Feature Engineering
