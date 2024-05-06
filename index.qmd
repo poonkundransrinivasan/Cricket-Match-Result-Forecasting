@@ -24,10 +24,11 @@ jupyter: python3
 ---
 
 ## Abstract
+
 Our project predicts the match results by using historical ODI cricket data and state-of-the-art machine learning. It redefines cricket analysis by closely monitoring forecast accuracy and encouraging user engagement. The primary goal of our project is to use historical and current match data, train them under regression classification models, select the best model and then use it to predict the winner of a cricket match based on the live match statistics (e.g., runs scored, wickets fallen, overs bowled), that update at regular intervals. This model will be displayed on a webpage which will refresh every time a new stat is updated, and the prediction from the model will update.
 
-
 ## Introduction
+
 For this project we wanted to showcase our prediction skill-set with the challenge of a live dataset, and what better live dataset to use than sports, so we went with our favorite sport - cricket. The past data will include information of ODI Matches from years 2002 to 2022, while the live data will consist of data from the year 2023. Each entry from 2023 will be read from the actual CSV file and entered into a database table with an interval of 10 to 20 seconds between two consecutive entries. These entries will be considered as live data and will be sent to the API caller.
 
 We’ll use two datasets:
@@ -37,6 +38,7 @@ ODI_Match_Data.csv: Provides facts about the location and season of the cricket 
 ODI_Match_info.csv: Overlaps in data with the above but provides information on the umpire, performance, and the city the match took place. We’ll need this one to analyze the batting and bowling performance of each player. It’s dimensions are 2380 rows of data by 18 variable columns.
 
 ## Setup
+
 ```{python}
 import pandas as pd
 import glob
@@ -45,22 +47,18 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split as tts
 from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier  
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.model_selection import cross_validate
-from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pickle
 ```
 
-
-
 ## EDA
+
 Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any.
 
 ```{python}
-
 
 info = pd.read_csv('data/ODI_Match_info.csv')
 info = info.rename(columns = {'id':'match_id'})
@@ -90,8 +88,8 @@ print(pd.DataFrame.describe(from02to22)) #descriptive function to look at datafr
 winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
 winners
 
-corr = sns.pairplot(from02to22) #determine any correlations in the data
-corr
+# corr = sns.pairplot(from02to22)
+# corr
 
 
 
@@ -99,7 +97,9 @@ corr
 ```
 
 ## Data Cleaning
+
 Here, during a thorough process of Data Cleaning, we dropped some columns which were largely empty and replaced some empties with 'Unknown'.
+
 ```{python}
 #drop columns that have more than 1Million NaNs
 
@@ -130,13 +130,12 @@ from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown')
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
 from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
-
-corr = sns.pairplot(from02to22)
-corr
+# corr = sns.pairplot(from02to22)
+# corr
 
 ```
 
-## Feature Engineering for Model Implementation
+## Updated feature engineering
 ```{python}
 
 import joblib
@@ -177,6 +176,12 @@ from02to22.head()
 ```
 
 
+```{python}
+
+cricDataSet
+
+
+```
 
 
 ## Feature Engineering
@@ -222,104 +227,101 @@ data = pd.concat([encoded_data.reset_index(drop=True), continuous.reset_index(dr
 ```
 
 ## Feature Selection
-As we have eliminated the unnecessary columns from data previously through data preprocessing and cleaning, now we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature. 
+
+As we have eliminated the unnecessary columns from data previously through data preprocessing and cleaning, now we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature.
+
 ```{python}
-X = cricDataSet.drop('winnerTeam', axis = 1) #input
-y = cricDataSet['winnerTeam'] #target
+
+xTemp = cricDataSet.drop('winnerTeam', axis = 1)
+yTemp = cricDataSet['winnerTeam']
 
 selector = SelectKBest(score_func= f_classif, k = 10)
-top10 = selector.fit_transform(X,y) #create variable that is the top 10 best feautures
+top10 = selector.fit_transform(xTemp,yTemp) #create variable that is the top 10 best feautures
 cols_idxs = selector.get_support(indices=True) #grab indices from feature cols, get_support is from **sklearn**
-top10 = X.iloc[:,cols_idxs] #add columns from whole dataset to the selected columns dataset https://stackoverflow.com/questions/39839112/the-easiest-way-for-getting-feature-names-after-running-selectkbest-in-scikit-le
-top10.head()
-
-
+top10 = xTemp.iloc[:,cols_idxs] #add columns from whole dataset to the selected columns dataset https://stackoverflow.com/questions/39839112/the-easiest-way-for-getting-feature-names-after-running-selectkbest-in-scikit-le
+top10.columns
 
 ```
 
 ```{python}
-X.columns
+cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = min_max_scaler.fit_transform(cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']])
+
+joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
+
+cricDataSet.head()
 ```
 
 ## Model Training (Logistic Regression)
+
 The input features and target feature are now broken down into training and testing groups and are put under our first regression model - Logistic regression.
+
 ```{python}
+
+X = cricDataSet.drop('winnerTeam', axis = 1) #input
+y = cricDataSet['winnerTeam'] #target
 
 #split data into training and testing
 
 
-#break into 4 groups for testing and training, make the training dataset 70% of the data and the testing dataset 30% https://builtin.com/data-science/train-test-split
-# X_train, X_test, y_train, y_test = tts(top10, y, test_size = 0.2) 
-
-
+#break into 4 groups for testing and training, make the training dataset 80% of the data and the testing dataset 20% https://builtin.com/data-science/train-test-split
 X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.2) 
-
-#PCA
-# pca = PCA(n_components = 5) #go from 10 components to 5 components
-# X_train_pca = pca.fit_transform(X_train)
-# X_test_pca = pca.transform(X_test)
-
-# X_train = X_train_pca
-# X_test = X_test_pca
 
 #training and testing models
 
- #decision tree
-# lr = LogisticRegression()
+#decision tree
+lr = LogisticRegression()
 
-# lr.fit(X_train, 
-#           y_train)
-# predictLR = lr.predict(X_test)
-# outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
-# outcomeLR['Actual'] = label_encoders[9].inverse_transform(outcomeLR['Actual'])
-# outcomeLR['Predicted'] = label_encoders[9].inverse_transform(outcomeLR['Predicted'])
+lr.fit(X_train, 
+          y_train)
+predictLR = lr.predict(X_test)
 
-# key = (label_encoders[9].classes_)
+outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
+
 
 
 ```
 
 ## Model Validation
+
 The results of Logistic regression are now cross validated and their performance metrics are displayed. As we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model.
+
 ```{python}
-# #Evaluating models
-# #logistic regression
-# cvLR = cross_validate(lr,X_train, y_train)
-# print("cross validation of logistic regression", cvLR)
-# print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
-# print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
-# print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
-# print("f1 of logistic regression:", metrics.f1_score(y_test, predictLR, average = 'weighted'))
-# print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
-# print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
+#Evaluating models
+#logistic regression
+cvLR = cross_validate(lr,X_train, y_train)
+print("cross validation of logistic regression", cvLR)
+print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
+print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
+print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
+print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
+print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
 
 
-# y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
-# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-# plt.plot(fpr,tpr)
-# plt.ylabel('True Positive Rate')
-# plt.xlabel('False Positive Rate')
-# plt.title('ROC Curve Logistic Regression')
-# plt.show()
+y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+plt.plot(fpr,tpr)
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.title('ROC Curve Logistic Regression')
+plt.show()
 
-# print('')
 
 
 
 ```
 
-
 ### Random Forest Classifier
-Now we take the Random Forest  Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model.
+
+Now we take the Random Forest Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model.
+
 ```{python}
 #random forest
-rfc = RandomForestClassifier(criterion='gini')
-rfc.fit(X_train, 
-          y_train)
-# # predictRFC = rfc.predict(X_test)
-# # outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
-# # outcomeRFC['Actual'] = label_encoders[9].inverse_transform(outcomeRFC['Actual'])
-# # outcomeRFC['Predicted'] = label_encoders[9].inverse_transform(outcomeRFC['Predicted'])
+# rfc = RandomForestClassifier(criterion='gini')
+# rfc.fit(X_train, 
+#           y_train)
+# predictRFC = rfc.predict(X_test)
+# outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
+
 
 # #Evaluating models
 # #random forest
@@ -341,91 +343,20 @@ rfc.fit(X_train,
 # plt.title('ROC Curve Random Forest')
 # plt.show()
 
-#FOR LOCAL USE
-# Step 2: Save the trained model to a pickle file
-# with open("/Users/cortmann/Desktop/523 - Data Mining/localCricketPredictions/cricketPrediction.pkl", "wb") as f:
-#     pickle.dump(rfc, f)
-
 ```
 
-```{python}
-from sklearn.metrics import accuracy_score
-yPred = rfc.predict(X_test)
-
-
-
-# Calculate the accuracy of the model
-accuracy = accuracy_score(y_test, yPred)
-print("Accuracy:", accuracy * 100, "%")
-
-```
-
-
-
-
-## Feed 2023 Data
-Now we feed the live data (which is the 2023 match data), through back end API, at regular intervals, thereby changing the stats everytime. And each time a statistic is updated, the prediction updates as well.
-```{python}
-# Step 2: Save the trained model to a pickle file
-with open("data/cricketPrediction.pkl", "wb") as f:
-    pickle.dump(rfc, f)
-    
-
-
-# Step 3: Load the model from the pickle file
-
-# with open("linear_regression_model.pkl", "rb") as f:
-#     loaded_model = pickle.load(f)
-
-
-```
-
+accuracy of random forest: 0.9899249308573687
+precision of random forest: 0.9899241933153199
+recall of random forest: 0.9899249308573687
+f1 of random forest: 0.9899243403563959
+ROCAUC macro of random forest: 0.9897132632925527
+ROCAUC micro of random forest: 0.9897132632925527\
+\
+![](images/rfc_roc_curve.png)
 
 ## Model Implementation
-Finally, we display the model predictionm on a webpage and take you through our journey of prediction!
 
-
-
-```{python}
-
-loaded_model = None
-
-# Load the model from the pickle file
-with open("data/cricketPrediction.pkl", "rb") as f:
-    loaded_model = pickle.load(f)
-    
-predictRFC = loaded_model.predict(X_test)
-
-outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
-outcomeRFC['Actual'] = label_encoders[9].inverse_transform(outcomeRFC['Actual'])
-outcomeRFC['Predicted'] = label_encoders[9].inverse_transform(outcomeRFC['Predicted'])
-    
-
-
-# cvRF = cross_validate(loaded_model,X_train, y_train)
-# print("cross validation of random forest", cvRF)
-# print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
-# print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
-# print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
-# print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
-# print("ROCAUC macro of random forest:", metrics.roc_auc_score(y_test, predictRFC))
-# print("ROCAUC micro of random forest:", metrics.roc_auc_score(y_test, predictRFC, average = 'micro'))
-
-
-# y_pred_proba = loaded_model.predict_proba(X_test)[::,1]
-# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-# plt.plot(fpr,tpr)
-# plt.ylabel('True Positive Rate')
-# plt.xlabel('False Positive Rate')
-# plt.title('ROC Curve Random Forest')
-# plt.show()
-
-
-```
-
-
-
-
+Finally, we display the model prediction on a webpage and take you through our journey of prediction!
 
 ```{python}
 
@@ -447,7 +378,6 @@ with open('data/player_map.json', 'w') as f:
     json.dump(player_map, f)
 
 ```
-
 
 ```{python}
 
@@ -485,7 +415,6 @@ temp['toss_decision'] = temp['toss_decision'].apply(lambda x: 0 if x == "bat" el
 
 ```
 
-
 ```{python}
 min_max_scaler = MinMaxScaler()
 
@@ -494,7 +423,6 @@ temp[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = min_max_scal
 joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
 
 ```
-
 
 ```{python}
 
@@ -514,25 +442,11 @@ rfc.fit(X_train,
 
 ```{python}
 
-from sklearn.metrics import accuracy_score
-yPred = rfc.predict(X_test)
-
-# Calculate the accuracy of the model
-accuracy = accuracy_score(y_test, yPred)
-print("Accuracy:", accuracy * 100, "%")
-
-```
-
-
-```{python}
-
 # Step 2: Save the trained model to a pickle file
 with open("data/cricketPrediction.pkl", "wb") as f:
     pickle.dump(rfc, f)
 
 ```
-
-
 
 ```{python}
 
@@ -679,21 +593,4 @@ def getPredictionPercent(out):
 
     return int(team1), int(team2), team1Name, team2Name
 
-```
-
-```{python}
-
-# out, liveJson, predictRFC = processLiveFeed()
-
-# team1, team2, team1Name, team2Name = getPredictionPercent(out)
-
-# zeros = np.count_nonzero(predictRFC == 0)
-# total = len(predictRFC)
-# ones = total - zeros
-
-# percTeam1 = (zeros/total) * 100
-# percTeam2 = 100 - percTeam1
-
-# print(percTeam1)
-# print(percTeam2)
 ```
