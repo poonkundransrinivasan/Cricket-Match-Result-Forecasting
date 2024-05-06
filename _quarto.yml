@@ -1,6 +1,10 @@
 project:
   type: website
 
+include-in-header:
+  - text: |
+     <link rel = "shortcut icon" href = "/images/crick.jpg" />
+
 website:
   title: "<img src='/images/crick.jpg' alt='' style='width: 2.6em; height: 2.2em; border-radius: 30%;'> <b>Cricket Winner Analyser</b>"
   navbar:
