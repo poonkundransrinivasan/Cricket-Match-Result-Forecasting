@@ -8,7 +8,7 @@ author:
 description: "Using Prediction Model to predict Live ODI Cricket Match Winners"
 format:
    html:
-   code-fold: true
+    code-fold: true
     code-tools: true
     code-overflow: wrap
     embed-resources: true
