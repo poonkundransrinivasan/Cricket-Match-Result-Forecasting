@@ -94,7 +94,7 @@ corr
 
 ## Data Cleaning
 
-Here, during a thorough process of Data Cleaning, we dropped some columns which were largely empty (>1000000), and replaced some empties with 'Unknown'. We also created two new variables that assign the winner of the match as the column of the winner to ensure a binary outcome we can predict. Categorical variables that are NaN values are converted to 'Unknown' to so the data can be used as an additional encoded variable rather than dropping the row entirely. Finally, we dropped data points that are only supplied after the match and would theoretically not be available to predict a live ongoing match.
+Here, during a thorough process of Data Cleaning, we dropped some columns which were largely empty (>1000000), and replaced some empties with 'Unknown'. We also created two new variables that assign the winner of the match as the column of the winner to ensure a binary outcome we can predict. Categorical variables that are NaN values are converted to 'Unknown' to so the data can be used as an additional encoded variable rather than dropping the row entirely. Finally, we dropped data points that are only supplied after the match and would theoretically not be available to predict a live ongoing match, and create another pairplot with our newly cleaned data to determine any correlations.
 
 ```{python}
 #drop columns that have more than 1Million NaNs
@@ -126,12 +126,12 @@ from02to22['player_of_match'] = from02to22['player_of_match'].fillna('Unknown')
 from02to22['umpire3'] = from02to22['umpire3'].fillna('Unknown') 
 from02to22 = from02to22.dropna(subset=['winner'])
 from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winner', 'cricsheet_id', 'season', 'venue', 'city', 'player_of_match', 'win_by_runs', 'win_by_wickets', 'umpire1', 'umpire2', 'umpire3', 'result']) #is date specific data really useful? also drop continuous match identifiers. We want the match stats
-# corr = sns.pairplot(from02to22)
-# corr
+corr = sns.pairplot(from02to22)
+corr
 
 ```
 
-
+Below we perform encoding and data scaling to use later in our web application.
 
 ## Feature engineering for model implementation
 ```{python}
@@ -245,7 +245,7 @@ cricDataSet.head()
 
 ## Model Training (Logistic Regression)
 
-The input features and target feature are now broken down into training and testing groups and are put under our first regression model - Logistic regression.
+The input features and target feature are now broken down into training and testing groups and are put under our first regression model - Logistic regression. We chose to break the data into 80% training and 20% testing to ensure as many potential relationships are explored as possible, as we have many based on our 10 independent variables.
 
 ```{python}
 
@@ -275,7 +275,7 @@ outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
 
 ## Model Validation
 
-The results of Logistic Regression are now cross validated and their performance metrics are displayed. As we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model. One benefit we may see in with this model is the speed of training, so if we potentially had better predictive variables, we may see a stronger model.
+The results of Logistic Regression are now cross validated and their performance metrics are displayed. As we observe the accuracy and precision of this model is around 56% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model. One benefit we may see in with this model is the speed of training, so if we potentially had better predictive variables, we may see a stronger model. Finally, the model does not converge as the maximum number of iterations are reached. Attempts were made to increase the iteration limit, though this was futile as the same warning was received.
 
 ```{python}
 #Evaluating models
@@ -304,7 +304,7 @@ plt.show()
 
 ### Random Forest Classifier
 
-Now we take the Random Forest Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model. One drawback we can see is that the model takes a very long time to train, so we have printed the accuracy metrics as markdown text and an image for time saving.
+Now we take the Random Forest Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model. One drawback we can see is that the model takes a very long time to train, so we have printed the accuracy metrics as markdown text and an image for time saving. Based on these  metrics we will move forward with a random forest classifier model.
 
 ```{python}
 #random forest
@@ -347,6 +347,8 @@ ROCAUC micro of random forest: 0.9897132632925527\
 ![](images/rfc_roc_curve.png)
 
 ## Model Recreation for Main Application
+
+From this point onwards, the following code is used to build files that will be fed into our web application. We retrain our model with the manual encoded variables from earlier so that each unique value receives a unique code when we implement the model in our app. Most of the process below is identical to our process above. This ensures the trees in the random forest have the correct values to assign to each outcome.
 
 ### Label Encoding
 Encoding the labels that contains team name and player name and saving them into json file.
@@ -422,7 +424,7 @@ joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
 
 ### Model retraining
 
-Re-training the model such with the encoded features and scaled features and saving the model as a pickle file. 
+Re-training the model such with the encoded features and scaled features and saving the model as a pickle file. This will be used to within the web application.
 
 ```{python}
 
