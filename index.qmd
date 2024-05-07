@@ -52,7 +52,7 @@ import joblib
 
 ## EDA
 
-Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any.
+Here, we first carried out Data Preprocessing where we merged the match_data and match_info files, then carried out Exploratory Data Analysis by using pairplots to find correlations between different variables, if any. Additionally, we determined the size, data types, sum of NAs, and some descriptive statistics to provide a deeper understanding of the dataset and guide feature engineering. 
 
 ```{python}
 
@@ -62,7 +62,7 @@ info = info.rename(columns = {'id':'match_id'})
 #append all files together
 csv_files = ['data/output_1.csv','data/output_2.csv','data/output_3.csv','data/output_4.csv','data/output_5.csv','data/output_6.csv','data/output_7.csv','data/output_8.csv','data/output_9.csv']
 
-matchData = pd.concat([pd.read_csv(f,low_memory=False) for f in csv_files ], ignore_index=True)
+matchData = pd.concat([pd.read_csv(f,low_memory=False) for f in csv_files ], ignore_index=True) #we import the data as seperate csvs to overcome GitHub's size limitations, then concatenate them all
 
 #merge frames on match ID column
 
@@ -84,8 +84,8 @@ print(pd.DataFrame.describe(from02to22)) #descriptive function to look at datafr
 winners = sns.countplot(data = from02to22, y = 'winner', order=from02to22['winner'].value_counts().index)
 winners
 
-# corr = sns.pairplot(from02to22)
-# corr
+corr = sns.pairplot(from02to22)
+corr
 
 
 
@@ -94,7 +94,7 @@ winners
 
 ## Data Cleaning
 
-Here, during a thorough process of Data Cleaning, we dropped some columns which were largely empty and replaced some empties with 'Unknown'.
+Here, during a thorough process of Data Cleaning, we dropped some columns which were largely empty (>1000000), and replaced some empties with 'Unknown'. We also created two new variables that assign the winner of the match as the column of the winner to ensure a binary outcome we can predict. Categorical variables that are NaN values are converted to 'Unknown' to so the data can be used as an additional encoded variable rather than dropping the row entirely. Finally, we dropped data points that are only supplied after the match and would theoretically not be available to predict a live ongoing match.
 
 ```{python}
 #drop columns that have more than 1Million NaNs
@@ -131,7 +131,9 @@ from02to22 = from02to22.drop(columns = ['match_id', 'start_date', 'date', 'winne
 
 ```
 
-## Updated feature engineering
+
+
+## Feature engineering for model implementation
 ```{python}
 
 import joblib
@@ -158,12 +160,6 @@ for col, encoder in label_encoders.items():
 
 cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']] = min_max_scaler.fit_transform(cricDataSet[['innings', 'ball', 'runs_off_bat', 'extras', 'dl_applied']])
 
-# # Save label encoder and scaler objects to disk
-# with open("data/label_encoder.pkl", "wb") as f:
-#     pickle.dump(label_encoder, f)
-
-# with open("data/min_max_scaler.pkl", "wb") as f:
-#     pickle.dump(min_max_scaler, f)
 
 joblib.dump(label_encoder, 'data/label_encoder.joblib')
 joblib.dump(min_max_scaler, 'data/min_max_scaler.joblib')
@@ -180,7 +176,7 @@ cricDataSet
 ```
 
 
-## Feature Engineering
+## Feature Engineering for initial model testing
 The next step is the Feature Engineering where we:
  - Normalized the continuous data
  - Encoded categorical variables
@@ -224,7 +220,7 @@ data = pd.concat([encoded_data.reset_index(drop=True), continuous.reset_index(dr
 
 ## Feature Selection
 
-As we have eliminated the unnecessary columns from data previously through data preprocessing and cleaning, now we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature.
+As we have eliminated the unnecessary columns from data previously through data preprocessing and cleaning, now we directly select the top 10 columns except winnerTeam as the input features of the model and the winnerTeam itself as the target feature. We used select K-best to choose the best 10 variables for predicting, using the f_classif function.
 
 ```{python}
 
@@ -264,14 +260,14 @@ X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.2)
 
 #training and testing models
 
-#decision tree
-# lr = LogisticRegression()
+#Logistic Regression
+lr = LogisticRegression()
 
-# lr.fit(X_train, 
-#           y_train)
-# predictLR = lr.predict(X_test)
+lr.fit(X_train, 
+       y_train)
+predictLR = lr.predict(X_test)
 
-# outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
+outcomeLR = pd.DataFrame ({'Actual': y_test, 'Predicted': predictLR})
 
 
 
@@ -279,27 +275,27 @@ X_train, X_test, y_train, y_test = tts(X, y, test_size = 0.2)
 
 ## Model Validation
 
-The results of Logistic regression are now cross validated and their performance metrics are displayed. As we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model.
+The results of Logistic Regression are now cross validated and their performance metrics are displayed. As we observe the accuracy and precision of this model is around 55% and the area under ROC curve is also around 0.5. As these metrics show that this might not be the best model, we move forward and train another model. One benefit we may see in with this model is the speed of training, so if we potentially had better predictive variables, we may see a stronger model.
 
 ```{python}
 #Evaluating models
 #logistic regression
-# cvLR = cross_validate(lr,X_train, y_train)
-# print("cross validation of logistic regression", cvLR)
-# print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
-# print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
-# print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
-# print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
-# print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
+cvLR = cross_validate(lr,X_train, y_train)
+print("cross validation of logistic regression", cvLR)
+print("accuracy of logistic regression:", metrics.accuracy_score(y_test, predictLR)) #testing how accuracy of the models
+print("precision of logistic regression:", metrics.precision_score(y_test, predictLR, average = 'weighted'))
+print("recall of logistic regression:", metrics.recall_score(y_test, predictLR, average = 'weighted'))
+print("ROCAUC macro of logistic regression:", metrics.roc_auc_score(y_test, predictLR))
+print("ROCAUC micro of logistic regression:", metrics.roc_auc_score(y_test, predictLR, average = 'micro'))
 
 
-# y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
-# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-# plt.plot(fpr,tpr)
-# plt.ylabel('True Positive Rate')
-# plt.xlabel('False Positive Rate')
-# plt.title('ROC Curve Logistic Regression')
-# plt.show()
+y_pred_proba = lr.predict_proba(X_test)[::,1] #https://www.statology.org/plot-roc-curve-python/
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+plt.plot(fpr,tpr)
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.title('ROC Curve Logistic Regression')
+plt.show()
 
 
 
@@ -308,36 +304,36 @@ The results of Logistic regression are now cross validated and their performance
 
 ### Random Forest Classifier
 
-Now we take the Random Forest Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model.
+Now we take the Random Forest Classifier, cross validate its results and display its performance metrics. As we observe the accuracy and precision of this model is around 96% and the area under ROC curve is also around 0.96. These metrics clearly show that this is the best model, so we move forward with this model. One drawback we can see is that the model takes a very long time to train, so we have printed the accuracy metrics as markdown text and an image for time saving.
 
 ```{python}
 #random forest
-# rfc = RandomForestClassifier(criterion='gini')
-# rfc.fit(X_train, 
-#           y_train)
-# predictRFC = rfc.predict(X_test)
-# outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
+rfc = RandomForestClassifier(criterion='gini')
+rfc.fit(X_train,
+        y_train)
+predictRFC = rfc.predict(X_test)
+outcomeRFC = pd.DataFrame ({'Actual': y_test, 'Predicted': predictRFC})
 
 
-# #Evaluating models
-# #random forest
-# cvRF = cross_validate(rfc,X_train, y_train)
-# print("cross validation of random forest", cvRF)
-# print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
-# print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
-# print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
-# print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
-# print("ROCAUC macro of random forest:", metrics.roc_auc_score(y_test, predictRFC))
-# print("ROCAUC micro of random forest:", metrics.roc_auc_score(y_test, predictRFC, average = 'micro'))
+#Evaluating models
+#random forest
+cvRF = cross_validate(rfc,X_train, y_train)
+print("cross validation of random forest", cvRF)
+print("accuracy of random forest:", metrics.accuracy_score(y_test, predictRFC)) #testing how accuracy of the models
+print("precision of random forest:", metrics.precision_score(y_test, predictRFC, average = 'weighted'))
+print("recall of random forest:", metrics.recall_score(y_test, predictRFC, average = 'weighted'))
+print("f1 of random forest:", metrics.f1_score(y_test, predictRFC, average = 'weighted'))
+print("ROCAUC macro of random forest:", metrics.roc_auc_score(y_test, predictRFC))
+print("ROCAUC micro of random forest:", metrics.roc_auc_score(y_test, predictRFC, average = 'micro'))
 
 
-# y_pred_proba = rfc.predict_proba(X_test)[::,1]
-# fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
-# plt.plot(fpr,tpr)
-# plt.ylabel('True Positive Rate')
-# plt.xlabel('False Positive Rate')
-# plt.title('ROC Curve Random Forest')
-# plt.show()
+y_pred_proba = rfc.predict_proba(X_test)[::,1]
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+plt.plot(fpr,tpr)
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.title('ROC Curve Random Forest')
+plt.show()
 
 ```
 
