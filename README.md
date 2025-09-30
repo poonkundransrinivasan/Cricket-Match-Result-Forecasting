@@ -1,4 +1,4 @@
-# Cricket Match Winner Analyser
+# Cricket Match Result Forecasting
 
 Final project repo for INFO 523 - Spring 2024.
 
